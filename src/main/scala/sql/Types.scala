@@ -27,7 +27,7 @@ object Types {
 
     val numericSchema = StructType(
       Seq(
-        StructField("a", ByteType, true),
+        StructField("a_book_examples", ByteType, true),
         StructField("b", ShortType, true),
         StructField("c", IntegerType, true),
         StructField("d", LongType, true),
@@ -50,7 +50,7 @@ object Types {
 
     val miscSchema = StructType(
       Seq(
-        StructField("a", BooleanType, true),
+        StructField("a_book_examples", BooleanType, true),
         StructField("b", NullType, true),
         StructField("c", StringType, true),
         StructField("d", BinaryType, true)
@@ -59,7 +59,7 @@ object Types {
 
     val complexScehma = StructType(
         Seq(
-          StructField("a", StructType(
+          StructField("a_book_examples", StructType(
             Seq(
               StructField("u", StringType, true),
               StructField("v", StringType, true),

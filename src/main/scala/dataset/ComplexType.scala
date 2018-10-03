@@ -59,7 +59,7 @@ object ComplexType {
     println("*** Example 2: arrays")
 
     val lines = Seq(
-      Line("a", Array(Point(0.0, 0.0), Point(2.0, 4.0))),
+      Line("a_book_examples", Array(Point(0.0, 0.0), Point(2.0, 4.0))),
       Line("b", Array(Point(-1.0, 0.0))),
       Line("c", Array(Point(0.0, 0.0), Point(2.0, 6.0), Point(10.0, 100.0)))
     )
@@ -81,7 +81,7 @@ object ComplexType {
     println("*** Example 3: maps")
 
     val namedPoints = Seq(
-      NamedPoints("a", Map("p1" -> Point(0.0, 0.0))),
+      NamedPoints("a_book_examples", Map("p1" -> Point(0.0, 0.0))),
       NamedPoints("b", Map("p1" -> Point(0.0, 0.0),
         "p2" -> Point(2.0, 6.0), "p3" -> Point(10.0, 100.0)))
     )

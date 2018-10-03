@@ -24,7 +24,7 @@ object ComplexSchema {
     //
 
     val rows1 = Seq(
-      Row(1, Row("a", "b"), 8.00, Row(1,2)),
+      Row(1, Row("a_book_examples", "b"), 8.00, Row(1,2)),
       Row(2, Row("c", "d"), 9.00, Row(3,4))
 
     )
@@ -73,7 +73,7 @@ object ComplexSchema {
     //
 
     val rows2 = Seq(
-      Row(1, Row("a", "b"), 8.00, Array(1,2)),
+      Row(1, Row("a_book_examples", "b"), 8.00, Array(1,2)),
       Row(2, Row("c", "d"), 9.00, Array(3,4,5))
 
     )
@@ -96,7 +96,7 @@ object ComplexSchema {
       )
     )
       .add(StructField("d", DoubleType, true))
-      .add("a", ArrayType(IntegerType))
+      .add("a_book_examples", ArrayType(IntegerType))
 
     val df2 = spark.createDataFrame(rows2Rdd, schema2)
 
