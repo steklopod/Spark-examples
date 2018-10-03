@@ -27,3 +27,7 @@ project/plugins/project/
 metastore_db/*
 /project/project/
 /.idea/
+.idea/
+*.iml
+
+#git rm -r --cached .idea
