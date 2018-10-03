@@ -25,10 +25,5 @@ project/plugins/project/
 
 # Hive
 metastore_db/*
-.idea/dictionaries/
-.idea/libraries/scala_sdk_2_11_12.xml
-.idea/modules/LearningSpark-build.iml
-.idea/modules/LearningSpark.iml
-.idea/sonarlint/
 /project/project/
 /.idea/

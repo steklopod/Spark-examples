@@ -18,4 +18,6 @@ libraryDependencies += "org.apache.spark" %% "spark-hive" % sparkVersion
 
 libraryDependencies += "org.apache.spark" %% "spark-graphx" % sparkVersion
 
+libraryDependencies += "org.apache.spark" %% "spark-mllib" % sparkVersion
+
 scalacOptions += "-target:jvm-1.8"
