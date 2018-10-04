@@ -1,11 +1,10 @@
 package streaming
 
-import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.apache.spark.{SparkContext, SparkConf}
-
+import org.apache.spark.streaming.{ Seconds, StreamingContext }
+import org.apache.spark.{ SparkContext, SparkConf }
 
 object Windowing {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("Windowing").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
@@ -21,7 +20,7 @@ object Windowing {
       if (r.count() == 0)
         println("Empty")
       else
-        println("Count = " + r.count() + " min = " + r.min()+ " max = " + r.max())
+        println("Count = " + r.count() + " min = " + r.min() + " max = " + r.max())
     })
 
     // start streaming

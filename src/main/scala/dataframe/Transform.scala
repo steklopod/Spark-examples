@@ -25,15 +25,14 @@ object Transform {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 
     // the original DataFrame
     customerDF.show()
 
     // a trivial UDF
-    val myFunc = udf {(x: Double) => x + 1}
+    val myFunc = udf { (x: Double) => x + 1 }
 
     // get the columns, having applied the UDF to the "discount" column and leaving the others as they were
     val colNames = customerDF.columns
@@ -44,7 +43,7 @@ object Transform {
     val mappedCols = cols.map(c => if (c.toString() == theColumn.toString()) myFunc(c).as("transformed") else c)
 
     // use select() to produce the new DataFrame
-    val newDF = customerDF.select(mappedCols:_*)
+    val newDF = customerDF.select(mappedCols: _*)
     newDF.show()
 
   }

@@ -1,6 +1,6 @@
 package special
 
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{ SparkContext, SparkConf }
 
 /**
  * Method on SparkContext creating an RDD[Long] with a range of values

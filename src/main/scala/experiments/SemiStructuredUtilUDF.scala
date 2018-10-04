@@ -1,7 +1,7 @@
 package experiments
 
-import org.apache.spark.sql.{Row, SQLContext, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{ Row, SQLContext, SparkSession }
+import org.apache.spark.{ SparkConf, SparkContext }
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -11,16 +11,16 @@ import scala.collection.mutable.ArrayBuffer
 
 object SemiStructuredUtilUDF {
 
-  def isAtomic(o: AnyRef) : Boolean = {
+  def isAtomic(o: AnyRef): Boolean = {
     o match {
-      case l:ArrayBuffer[_] => false
+      case l: ArrayBuffer[_] => false
       case _ => true
     }
   }
 
-  def isString(o: AnyRef) : Boolean = {
+  def isString(o: AnyRef): Boolean = {
     o match {
-      case s:String => true
+      case s: String => true
       case _ => false
     }
   }
@@ -32,36 +32,36 @@ object SemiStructuredUtilUDF {
   //  }
   //}
 
-  def isArray(o:AnyRef) : Boolean = {
+  def isArray(o: AnyRef): Boolean = {
     o match {
-      case l:ArrayBuffer[_] => true
+      case l: ArrayBuffer[_] => true
       case _ => false
     }
   }
 
-  def arrayLength(o: AnyRef) : Int = {
+  def arrayLength(o: AnyRef): Int = {
     o match {
-      case l:ArrayBuffer[_] => l.size
+      case l: ArrayBuffer[_] => l.size
       case null => 0
       case _ => 1
     }
   }
 
-  def isStruct(o: AnyRef) : Boolean = {
+  def isStruct(o: AnyRef): Boolean = {
     o match {
-      case r:Row => true
+      case r: Row => true
       case _ => false
     }
   }
 
-  def arrayContains(a: AnyRef, v: AnyRef) : Boolean = {
+  def arrayContains(a: AnyRef, v: AnyRef): Boolean = {
     a match {
-      case l:ArrayBuffer[_] => l.contains(v)
+      case l: ArrayBuffer[_] => l.contains(v)
       case _ => false
     }
   }
 
-  def struct(a:AnyRef) : Boolean = {
+  def struct(a: AnyRef): Boolean = {
     println("hello")
     true
   }
@@ -77,10 +77,7 @@ object SemiStructuredUtilUDF {
     transactions.printSchema()
     transactions.createOrReplaceTempView("transactions")
 
-
     spark.udf.register("struct", struct _)
-
-
 
     val all =
       spark.sql("SELECT a, id, struct(address) FROM transactions")

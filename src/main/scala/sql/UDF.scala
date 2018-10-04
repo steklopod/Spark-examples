@@ -1,8 +1,8 @@
 package sql
 
 import org.apache.spark.sql._
-import org.apache.spark.sql.types.{DoubleType, StructType}
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.sql.types.{ DoubleType, StructType }
+import org.apache.spark.{ SparkContext, SparkConf }
 
 // a case class for our sample table
 case class Cust(id: Integer, name: String, sales: Double, discounts: Double, state: String)
@@ -31,8 +31,7 @@ object UDF {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
     val customerTable = spark.sparkContext.parallelize(custs, 4).toDF()
 
     // DSL usage -- query using a UDF but without SQL
@@ -72,7 +71,7 @@ object UDF {
 
     // GROUP BY clause
 
-    def stateRegion(state:String) = state match {
+    def stateRegion(state: String) = state match {
       case "CA" | "AK" | "OR" | "WA" => "West"
       case "ME" | "NH" | "MA" | "RI" | "CT" | "VT" => "NorthEast"
       case "AZ" | "NM" | "CO" | "UT" => "SouthWest"
@@ -93,7 +92,7 @@ object UDF {
 
     // we can also apply a UDF to the result columns
 
-    def discountRatio(sales: Double, discounts: Double) = discounts/sales
+    def discountRatio(sales: Double, discounts: Double) = discounts / sales
 
     spark.udf.register("discountRatio", discountRatio _)
 
@@ -108,8 +107,7 @@ object UDF {
 
     // we can make the UDF create nested structure in the results
 
-
-    def makeStruct(sales: Double, disc:Double) = SalesDisc(sales, disc)
+    def makeStruct(sales: Double, disc: Double) = SalesDisc(sales, disc)
 
     spark.udf.register("makeStruct", makeStruct _)
 

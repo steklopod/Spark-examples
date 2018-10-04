@@ -2,7 +2,7 @@ package graphx
 
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 
 //
 // Create a graph of second degree neighbors, as in
@@ -18,7 +18,7 @@ object SecondDegreeNeighbors {
     //
 
     val vertices: RDD[(VertexId, String)] =
-      sc.parallelize(Array((1L,""), (2L,""), (4L,""), (6L,"")))
+      sc.parallelize(Array((1L, ""), (2L, ""), (4L, ""), (6L, "")))
 
     val edges: RDD[Edge[String]] =
       sc.parallelize(Array(Edge(1L, 2L, ""), Edge(1L, 4L, ""), Edge(1L, 6L, "")))
@@ -47,12 +47,10 @@ object SecondDegreeNeighbors {
     //
 
     val ngVertices: VertexRDD[Set[VertexId]] =
-      successorSetGraph.aggregateMessages[Set[VertexId]] (
+      successorSetGraph.aggregateMessages[Set[VertexId]](
         triplet => triplet.sendToDst(triplet.srcAttr.toSet),
-        (s1, s2) => s1 ++ s2
-    ).mapValues[Set[VertexId]](
-        (id: VertexId, neighbors: Set[VertexId]) => neighbors - id
-    )
+        (s1, s2) => s1 ++ s2).mapValues[Set[VertexId]](
+          (id: VertexId, neighbors: Set[VertexId]) => neighbors - id)
 
     //
     // Create an edge for each neighbor relationship
@@ -63,8 +61,7 @@ object SecondDegreeNeighbors {
         case (source: VertexId, allDests: Set[VertexId]) => {
           allDests.map((dest: VertexId) => Edge(source, dest, ""))
         }
-      }
-    )
+      })
 
     //
     // Now put it all together

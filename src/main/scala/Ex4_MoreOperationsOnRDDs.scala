@@ -1,4 +1,4 @@
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{ SparkContext, SparkConf }
 
 object Ex4_MoreOperationsOnRDDs {
   def main(args: Array[String]) {
@@ -19,7 +19,7 @@ object Ex4_MoreOperationsOnRDDs {
     // can use a partial function to filter and transform
     // notice the new RDD in this case has a different type
     val consonantsAsDigits = letters collect {
-      case c:Char if !vowels.contains(c) => c.asDigit
+      case c: Char if !vowels.contains(c) => c.asDigit
     }
     consonantsAsDigits.foreach(println)
 
@@ -42,7 +42,8 @@ object Ex4_MoreOperationsOnRDDs {
     // notice use of Option type
     // TODO: what point was I trying to make?
     val mods = modThreeGroups.collect({
-      case (m, vals) => vals.count(_ => true) }).countByValue
+      case (m, vals) => vals.count(_ => true)
+    }).countByValue
     println("results found 3 times: " + mods.get(3))
     println("results found 4 times: " + mods.get(4))
     println("results found 7 times: " + mods.get(7))

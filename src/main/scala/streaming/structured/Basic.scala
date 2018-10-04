@@ -5,22 +5,21 @@ import org.apache.spark.sql.SparkSession
 import streaming.util.CSVFileStreamGenerator
 
 /**
-  * A very basic example of structured streaming as introduced in Spark 2.0.
-  *
-  * A sequence of CSV files is treated as a stream and subscribed to,
-  * producing a streaming DataFrame.
-  *
-  * In this example, every time a batch of data is delivered the new records are
-  * dumped to the console. Keep in mind that some batches will deliver only
-  * one file, while others will deliver several files.
-  */
+ * A very basic example of structured streaming as introduced in Spark 2.0.
+ *
+ * A sequence of CSV files is treated as a stream and subscribed to,
+ * producing a streaming DataFrame.
+ *
+ * In this example, every time a batch of data is delivered the new records are
+ * dumped to the console. Keep in mind that some batches will deliver only
+ * one file, while others will deliver several files.
+ */
 
 object Basic {
 
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
 
-
-   val fm = new CSVFileStreamGenerator(10, 5, 500)
+    val fm = new CSVFileStreamGenerator(10, 5, 500)
 
     println("*** Starting to stream")
 
@@ -34,9 +33,7 @@ object Basic {
     val recordSchema = StructType(
       Seq(
         StructField("key", StringType),
-        StructField("value", IntegerType)
-      )
-    )
+        StructField("value", IntegerType)))
 
     // a streaming DataFrame resulting from parsing the records of the CSV files
     val csvDF = spark

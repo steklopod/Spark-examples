@@ -2,20 +2,20 @@ package streaming
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming._
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 
 import scala.collection.mutable
 
 /**
-  * This example demonstrates that there doesn't seem to be a tidy way to
-  * block the main thread until streaming has stopped if stream
-  * processing is throwing exceptions.
-  */
+ * This example demonstrates that there doesn't seem to be a tidy way to
+ * block the main thread until streaming has stopped if stream
+ * processing is throwing exceptions.
+ */
 
 object ExceptionPropagation {
-  case class SomeException(s: String)  extends Exception(s)
+  case class SomeException(s: String) extends Exception(s)
 
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("ExceptionPropagation").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
@@ -28,7 +28,7 @@ object ExceptionPropagation {
 
     // register for data
     stream
-      .map(x => { throw new SomeException("something"); x} )
+      .map(x => { throw new SomeException("something"); x })
       .foreachRDD(r => println("*** count = " + r.count()))
 
     // start streaming

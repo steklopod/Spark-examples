@@ -3,8 +3,6 @@ package experiments
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
-
-
 object UDFExtraParameter {
   private case class Cust(id: Integer, name: String, sales: Double, discount: Double, state: String)
 
@@ -20,8 +18,7 @@ object UDFExtraParameter {
     val pairs = Seq(
       (1, "One"),
       (2, "Two"),
-      (3, "Three")
-    )
+      (3, "Three"))
     // make it an RDD and convert to a DataFrame
     val theMap = spark.sparkContext.parallelize(pairs, 4).collectAsMap()
 
@@ -31,11 +28,10 @@ object UDFExtraParameter {
 
     val theUDF =
       udf { (datum: Int, map: Map[Int, String]) =>
-        map.getOrElse(datum, "Other")}
+        map.getOrElse(datum, "Other")
+      }
 
-    val dataDF = dataRDD.map((_,theMap)).toDF("data", "theMap");
-
-
+    val dataDF = dataRDD.map((_, theMap)).toDF("data", "theMap");
 
     //val dataAndMap = dataWithMap.select(firstUDF(col("pairs")).as("data"),
     //  secondUDF(col("pairs")).as("theMap"))

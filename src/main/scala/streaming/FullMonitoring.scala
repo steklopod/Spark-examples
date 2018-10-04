@@ -1,61 +1,54 @@
 package streaming
 
 import org.apache.spark.streaming.scheduler._
-import org.apache.spark.{SparkContext, SparkConf}
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.{ SparkContext, SparkConf }
+import org.apache.spark.streaming.{ Seconds, StreamingContext }
 
 import scala.language.postfixOps
 
 // This very more complex listener monitors the full range of receiver behaviors.
 // For a simple example, see Monitoring.scala.
 private class FullListener
-  extends StreamingListener
-{
+  extends StreamingListener {
 
-  private def showBatchInfo(action: String, info: BatchInfo) : Unit = {
+  private def showBatchInfo(action: String, info: BatchInfo): Unit = {
     println("=== " + action + " batch with " + info.numRecords + " records")
   }
 
-  override def onBatchCompleted
-  (batchCompleted: StreamingListenerBatchCompleted) = synchronized {
+  override def onBatchCompleted(batchCompleted: StreamingListenerBatchCompleted) = synchronized {
 
     showBatchInfo("completed", batchCompleted.batchInfo)
 
   }
 
-  override def onBatchStarted
-  (batchCompleted: StreamingListenerBatchStarted) = synchronized {
+  override def onBatchStarted(batchCompleted: StreamingListenerBatchStarted) = synchronized {
 
     showBatchInfo("started", batchCompleted.batchInfo)
 
   }
 
-  override def onBatchSubmitted
-  (batchCompleted: StreamingListenerBatchSubmitted) = synchronized {
+  override def onBatchSubmitted(batchCompleted: StreamingListenerBatchSubmitted) = synchronized {
 
     showBatchInfo("submitted", batchCompleted.batchInfo)
 
   }
 
-  override def onReceiverStarted
-  (receiverStarted: StreamingListenerReceiverStarted) = synchronized {
+  override def onReceiverStarted(receiverStarted: StreamingListenerReceiverStarted) = synchronized {
     println("=== LISTENER: Stopped receiver " +
-      receiverStarted.receiverInfo.name+ "' on stream '" +
+      receiverStarted.receiverInfo.name + "' on stream '" +
       receiverStarted.receiverInfo.streamId + "'")
   }
 
-  override def onReceiverStopped
-  (receiverStopped: StreamingListenerReceiverStopped) = synchronized {
+  override def onReceiverStopped(receiverStopped: StreamingListenerReceiverStopped) = synchronized {
     println("=== LISTENER: Stopped receiver '" +
       receiverStopped.receiverInfo.name + "' on stream '" +
-      receiverStopped.receiverInfo.streamId + "'"
-    )
+      receiverStopped.receiverInfo.streamId + "'")
   }
 
 }
 
 object FullMonitoring {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val conf =
       new SparkConf().setAppName("MonitoringStreaming").setMaster("local[4]")
     val sc = new SparkContext(conf)
@@ -66,7 +59,6 @@ object FullMonitoring {
     // create the stream
     val stream = ssc.receiverStream(new CustomReceiver)
     val stream2 = ssc.receiverStream(new CustomReceiver)
-
 
     // register a listener to monitor all the receivers
     val listener = new FullListener
@@ -106,8 +98,6 @@ object FullMonitoring {
 
     println("*** stopping streaming")
     ssc.stop()
-
-
 
     // wait a bit longer for the call to awaitTermination() to return
     Thread.sleep(5000)

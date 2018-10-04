@@ -1,11 +1,11 @@
 package streaming
 
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{ SparkContext, SparkConf }
 import org.apache.spark.storage.StorageLevel
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.{ Seconds, StreamingContext }
 import org.apache.spark.streaming.receiver.Receiver
 
-import scala.concurrent.{Await, Promise}
+import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
 import scala.util.Success
 import scala.language.postfixOps
@@ -18,8 +18,7 @@ import scala.language.postfixOps
 //
 class CustomReceiver
   extends Receiver[String](StorageLevel.MEMORY_ONLY)
-  with Serializable
-{
+  with Serializable {
 
   //
   // Two way communication with the receiver thread: one promise/future
@@ -67,7 +66,7 @@ class CustomReceiver
   // exit if the streaming context has asked it to by calling onStop() above.
   //
   private def receive(): Unit = {
-    while(!isStopped && !sync.futureTermination.isCompleted) {
+    while (!isStopped && !sync.futureTermination.isCompleted) {
       try {
         // make it a bit slow to stop
         Thread.sleep(100)
@@ -85,9 +84,8 @@ class CustomReceiver
 
 }
 
-
 object CustomStreaming {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val conf =
       new SparkConf().setAppName("CustomSeqStreaming").setMaster("local[4]")
     val sc = new SparkContext(conf)

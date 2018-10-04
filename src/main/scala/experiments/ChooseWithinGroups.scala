@@ -2,8 +2,8 @@ package experiments
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.{Column, SQLContext, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{ Column, SQLContext, SparkSession }
+import org.apache.spark.{ SparkConf, SparkContext }
 
 //
 // Standard SQL problem of choosing a distinguished record within groups
@@ -21,10 +21,9 @@ object ChooseWithinGroups {
     import spark.implicits._
 
     val people = Seq(
-      (5,"Bob","Jones","Canada",23),
-      (7,"Fred","Smith","Canada",18),
-      (5,"Robert","Andrews","USA",32)
-    )
+      (5, "Bob", "Jones", "Canada", 23),
+      (7, "Fred", "Smith", "Canada", 18),
+      (5, "Robert", "Andrews", "USA", 32))
     val peopleRows = spark.sparkContext.parallelize(people, 4)
 
     val peopleDF = peopleRows.toDF("id", "first", "last", "country", "age")
@@ -38,7 +37,8 @@ object ChooseWithinGroups {
       peopleDF.select($"id" as "mid", $"age" as "mage")
         .groupBy("mid").agg(max($"mage") as "maxage")
 
-    val maxAgeAll = maxAge.join(peopleDF,
+    val maxAgeAll = maxAge.join(
+      peopleDF,
       maxAge("maxage") === peopleDF("age") and maxAge("mid") === peopleDF("id"),
       "inner").select("id", "first", "last", "country", "age")
 
@@ -53,8 +53,7 @@ object ChooseWithinGroups {
     val pairs: RDD[(Int, Payload)] = peopleRows.map({
       case (id: Int, first: String, last: String, country: String, age: Int) =>
         (id, (first, last, country, age))
-    }
-    )
+    })
 
     def add(acc: Option[Payload], rec: Payload): Option[Payload] = {
       acc match {
@@ -79,4 +78,5 @@ object ChooseWithinGroups {
 
     withMax.collect().foreach(println)
 
-  }}
+  }
+}

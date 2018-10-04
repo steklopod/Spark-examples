@@ -1,7 +1,7 @@
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{ SparkContext, SparkConf }
 
 object Ex1_SimpleRDD {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("Ex1_SimpleRDD").setMaster("local[4]")
     val sc = new SparkContext(conf)
 

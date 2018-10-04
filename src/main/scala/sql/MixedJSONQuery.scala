@@ -1,10 +1,10 @@
 package sql
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 
 object MixedJSONQuery {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val spark =
       SparkSession.builder()
         .appName("SQL-MixedJSONQuery")
@@ -14,7 +14,6 @@ object MixedJSONQuery {
     val transactions = spark.read.json("src/main/resources/data/mixed.json")
     transactions.printSchema()
     transactions.createOrReplaceTempView("transactions")
-
 
     val all = spark.sql("SELECT id FROM transactions")
     all.foreach(r => println(r))
@@ -32,7 +31,6 @@ object MixedJSONQuery {
     println("*** selecting a specific array element")
     val array2 = spark.sql("SELECT id, orders[0] FROM transactions")
     array2.foreach(r => println(r))
-
 
   }
 }

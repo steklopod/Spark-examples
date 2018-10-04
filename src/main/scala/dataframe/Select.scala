@@ -22,8 +22,7 @@ object Select {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 
     println("*** use * to select() all columns")
@@ -40,8 +39,9 @@ object Select {
 
     println("*** use as() on Column to rename")
 
-    customerDF.select(customerDF("id").as("Customer ID"),
-                      customerDF("discount").as("Total Discount")).show()
+    customerDF.select(
+      customerDF("id").as("Customer ID"),
+      customerDF("discount").as("Total Discount")).show()
 
     println("*** $ as shorthand to obtain Column")
 

@@ -1,7 +1,7 @@
 package sql
 
-import org.apache.spark.sql.{SQLContext, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{ SQLContext, SparkSession }
+import org.apache.spark.{ SparkConf, SparkContext }
 
 //
 // ***NOTE***: this fails in Spark 1.3.0 with scala.MatchError
@@ -39,8 +39,7 @@ object CaseClassSchemaProblem {
     val things = Seq(
       Thing(1, IntHolder(42)),
       Thing(2, StringHolder("hello")),
-      Thing(3, BooleanHolder(false))
-    )
+      Thing(3, BooleanHolder(false)))
     val thingsDF = spark.sparkContext.parallelize(things, 4).toDF()
 
     thingsDF.createOrReplaceTempView("things")
@@ -52,6 +51,4 @@ object CaseClassSchemaProblem {
     all.show()
   }
 }
-
-
 

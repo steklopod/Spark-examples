@@ -1,7 +1,7 @@
 package streaming
 
-import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.streaming.{ Seconds, StreamingContext }
+import org.apache.spark.{ SparkContext, SparkConf }
 
 //
 // This shows a rather simple minded approach to accumulating the data
@@ -11,7 +11,7 @@ import org.apache.spark.{SparkContext, SparkConf}
 // efficient approach.
 //
 object Accumulation {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("Accumulation").setMaster("local[4]")
     val sc = new SparkContext(conf)
     val ssc = new StreamingContext(sc, Seconds(1))

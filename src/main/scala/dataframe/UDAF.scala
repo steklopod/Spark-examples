@@ -1,7 +1,7 @@
 package dataframe
 
 import org.apache.spark.sql._
-import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
+import org.apache.spark.sql.expressions.{ MutableAggregationBuffer, UserDefinedAggregateFunction }
 import org.apache.spark.sql.types._
 
 //
@@ -39,7 +39,7 @@ object UDAF {
       if (!input.isNullAt(0)) {
         val sales = input.getDouble(0)
         if (sales > 500.0) {
-          buffer.update(0, sum+sales)
+          buffer.update(0, sum + sales)
         }
       }
     }
@@ -55,7 +55,7 @@ object UDAF {
     }
   }
 
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val spark =
       SparkSession.builder()
         .appName("DataFrame-UDAF")
@@ -70,8 +70,7 @@ object UDAF {
       (2, "Acme Widgets", 410500.00, 500.00, "CA"),
       (3, "Widgetry", 200.00, 200.00, "CA"),
       (4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      (5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      (5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
     val customerRows = spark.sparkContext.parallelize(custs, 4)
     val customerDF = customerRows.toDF("id", "name", "sales", "discount", "state")
 

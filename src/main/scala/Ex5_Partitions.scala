@@ -1,14 +1,14 @@
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{ SparkContext, SparkConf }
 
 import org.apache.spark.SparkContext._
 
-import scala.collection.{mutable, Iterator}
+import scala.collection.{ mutable, Iterator }
 
 object Ex5_Partitions {
 
   // create an easy way to look at the partitioning of an RDD
-  def analyze[T](r: RDD[T]) : Unit = {
+  def analyze[T](r: RDD[T]): Unit = {
     val partitions = r.glom()
     println(partitions.count() + " partitions")
 
@@ -27,7 +27,7 @@ object Ex5_Partitions {
     val sc = new SparkContext(conf)
 
     // look at the distribution of numbers across partitions
-    val numbers =  sc.parallelize(1 to 100, 4)
+    val numbers = sc.parallelize(1 to 100, 4)
     println("original RDD:")
     analyze(numbers)
 
@@ -55,8 +55,7 @@ object Ex5_Partitions {
 
     // but there IS a way to calculate the difference without
     // introducing communications
-    def subtractFunc(wholeIter: Iterator[Int], partIter: Iterator[Int]) :
-    Iterator[Int] = {
+    def subtractFunc(wholeIter: Iterator[Int], partIter: Iterator[Int]): Iterator[Int] = {
       val partSet = new mutable.HashSet[Int]()
       partSet ++= partIter
       wholeIter.filterNot(partSet.contains(_))
@@ -107,7 +106,7 @@ object Ex5_Partitions {
     println("just rolling it up")
     analyze(rollup)
 
-    def rollupFunc(i: Iterator[(String, Int)]) : Iterator[(String, Int)] = {
+    def rollupFunc(i: Iterator[(String, Int)]): Iterator[(String, Int)] = {
       val m = new mutable.HashMap[String, Int]()
       i.foreach {
         case (k, v) => if (m.contains(k)) m(k) = m(k) + v else m(k) = v

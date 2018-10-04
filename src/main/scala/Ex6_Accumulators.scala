@@ -1,5 +1,5 @@
 import org.apache.spark.util.AccumulatorV2
-import org.apache.spark.{AccumulableParam, AccumulatorParam, SparkConf, SparkContext}
+import org.apache.spark.{ AccumulableParam, AccumulatorParam, SparkConf, SparkContext }
 
 import scala.collection.mutable
 

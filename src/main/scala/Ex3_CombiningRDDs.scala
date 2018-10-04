@@ -1,7 +1,7 @@
 import scala.collection.Iterator
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkException, SparkContext, SparkConf}
+import org.apache.spark.{ SparkException, SparkContext, SparkConf }
 
 import scala.collection.mutable.ListBuffer
 
@@ -87,8 +87,7 @@ object Ex3_CombiningRDDs {
       unequalCount foreach {
         case (c, i) => println(i + ":  " + c)
       }
-    }
-    catch {
+    } catch {
       case se: SparkException => {
         val t = se.getMessage
         println("Exception caught: " + se.getMessage)
@@ -103,8 +102,7 @@ object Ex3_CombiningRDDs {
     // happy -- it's an interesting exercise to remove some of them and read
     // the complaints
 
-    def zipFunc(lIter: Iterator[Char], nIter: Iterator[Int]) :
-      Iterator[(Char, Int)] = {
+    def zipFunc(lIter: Iterator[Char], nIter: Iterator[Int]): Iterator[(Char, Int)] = {
       val res = new ListBuffer[(Char, Int)]
       while (lIter.hasNext || nIter.hasNext) {
         if (lIter.hasNext && nIter.hasNext) {

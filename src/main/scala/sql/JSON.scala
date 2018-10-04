@@ -1,11 +1,10 @@
 package sql
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.{SparkConf, SparkContext}
-
+import org.apache.spark.{ SparkConf, SparkContext }
 
 object JSON {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val spark =
       SparkSession.builder()
         .appName("SQL-JSON")

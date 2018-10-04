@@ -1,10 +1,10 @@
 package sql
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.{Row, SQLContext, SparkSession}
+import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.sql.{ Row, SQLContext, SparkSession }
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.sources.{BaseRelation, RelationProvider, TableScan}
+import org.apache.spark.sql.sources.{ BaseRelation, RelationProvider, TableScan }
 
 //
 // Demonstrate the Spark SQL external data source API, but for
@@ -17,17 +17,14 @@ import org.apache.spark.sql.sources.{BaseRelation, RelationProvider, TableScan}
 // Extending TableScan allows us to describe the schema and
 // provide the rows when requested
 //
-case class MyTableScan(count: Int, partitions: Int)
-                      (@transient val sqlContext: SQLContext)
-  extends BaseRelation with TableScan
-{
+case class MyTableScan(count: Int, partitions: Int)(@transient val sqlContext: SQLContext)
+  extends BaseRelation with TableScan {
   val schema: StructType = StructType(Seq(
     StructField("val", IntegerType, nullable = false),
     StructField("squared", IntegerType, nullable = false),
-    StructField("cubed", IntegerType, nullable = false)
-  ))
+    StructField("cubed", IntegerType, nullable = false)))
 
-  private def makeRow(i: Int): Row = Row(i, i*i, i*i*i)
+  private def makeRow(i: Int): Row = Row(i, i * i, i * i * i)
 
   def buildScan: RDD[Row] = {
     val values = (1 to count).map(i => makeRow(i))
@@ -44,7 +41,8 @@ case class MyTableScan(count: Int, partitions: Int)
 class CustomRP extends RelationProvider {
 
   def createRelation(sqlContext: SQLContext, parameters: Map[String, String]) = {
-    MyTableScan(parameters("rows").toInt,
+    MyTableScan(
+      parameters("rows").toInt,
       parameters("partitions").toInt)(sqlContext)
   }
 

@@ -2,11 +2,11 @@ package hiveql
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.hive.HiveContext
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 
 // The simple form of user-defined function base class provided in Hive
 class DiscountSalesUDF extends org.apache.hadoop.hive.ql.exec.UDF {
-  def evaluate (sales: Double, discount: Double) : Double = {
+  def evaluate(sales: Double, discount: Double): Double = {
     sales - discount
   }
 }
@@ -17,7 +17,7 @@ class DiscountSalesUDF extends org.apache.hadoop.hive.ql.exec.UDF {
 
 object SimpleUDF {
 
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val spark =
       SparkSession.builder()
         .appName("HiveQL-SimpleUDF")
@@ -33,8 +33,7 @@ object SimpleUDF {
       (2, "Acme Widgets", 410500.00, 500.00, "CA"),
       (3, "Widgetry", 410500.00, 200.00, "CA"),
       (4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      (5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      (5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
     val customerRows = spark.sparkContext.parallelize(custs, 4)
     val customerDF = customerRows.toDF("id", "name", "sales", "discount", "state")
 

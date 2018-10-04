@@ -1,7 +1,7 @@
 package sql
 
-import org.apache.spark.sql.{SQLContext, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{ SQLContext, SparkSession }
+import org.apache.spark.{ SparkConf, SparkContext }
 
 //
 // Define data in terms of a case class, convert it to a DataFrame,
@@ -27,8 +27,7 @@ object Basic {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
     // make it an RDD and convert to a DataFrame
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 
@@ -80,7 +79,6 @@ object Basic {
       spark.sql("SELECT * FROM CUSTOMER")
     caseInsensitive.show()
     spark.conf.set("spark.sql.caseSensitive", "true")
-
 
   }
 }

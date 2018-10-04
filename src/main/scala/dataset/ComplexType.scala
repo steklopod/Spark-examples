@@ -61,8 +61,7 @@ object ComplexType {
     val lines = Seq(
       Line("a_book_examples", Array(Point(0.0, 0.0), Point(2.0, 4.0))),
       Line("b", Array(Point(-1.0, 0.0))),
-      Line("c", Array(Point(0.0, 0.0), Point(2.0, 6.0), Point(10.0, 100.0)))
-    )
+      Line("c", Array(Point(0.0, 0.0), Point(2.0, 6.0), Point(10.0, 100.0))))
     val linesDS = lines.toDS()
 
     linesDS.printSchema()
@@ -82,9 +81,9 @@ object ComplexType {
 
     val namedPoints = Seq(
       NamedPoints("a_book_examples", Map("p1" -> Point(0.0, 0.0))),
-      NamedPoints("b", Map("p1" -> Point(0.0, 0.0),
-        "p2" -> Point(2.0, 6.0), "p3" -> Point(10.0, 100.0)))
-    )
+      NamedPoints("b", Map(
+        "p1" -> Point(0.0, 0.0),
+        "p2" -> Point(2.0, 6.0), "p3" -> Point(10.0, 100.0))))
     val namedPointsDS = namedPoints.toDS()
 
     namedPointsDS.printSchema()
@@ -104,8 +103,7 @@ object ComplexType {
       NameAndMaybePoint("p1", None),
       NameAndMaybePoint("p2", Some(Point(-3.1, 99.99))),
       NameAndMaybePoint("p3", Some(Point(1.0, 2.0))),
-      NameAndMaybePoint("p4", None)
-    )
+      NameAndMaybePoint("p4", None))
     val maybePointsDS = maybePoints.toDS()
 
     maybePointsDS.printSchema()

@@ -1,17 +1,17 @@
 package sql
 
-import java.sql.{Date, Timestamp}
+import java.sql.{ Date, Timestamp }
 
-import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.{ Row, SparkSession }
 import org.apache.spark.sql.types._
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 
 //
 // One way to create a DataFrame containing dates and timestamps, and
 // query for ranges thereof.
 //
 object DateTime {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val spark =
       SparkSession.builder()
         .appName("SQL-DateTime")
@@ -22,27 +22,21 @@ object DateTime {
       Seq(
         StructField("id", IntegerType, true),
         StructField("dt", DateType, true),
-        StructField("ts", TimestampType, true)
-      )
-    )
+        StructField("ts", TimestampType, true)))
     val rows = spark.sparkContext.parallelize(
       Seq(
         Row(
           1,
           Date.valueOf("2000-01-11"),
-          Timestamp.valueOf("2011-10-02 09:48:05.123456")
-        ),
+          Timestamp.valueOf("2011-10-02 09:48:05.123456")),
         Row(
           1,
           Date.valueOf("2004-04-14"),
-          Timestamp.valueOf("2011-10-02 12:30:00.123456")
-        ),
+          Timestamp.valueOf("2011-10-02 12:30:00.123456")),
         Row(
           1,
           Date.valueOf("2008-12-31"),
-          Timestamp.valueOf("2011-10-02 15:00:00.123456")
-        )
-      ), 4)
+          Timestamp.valueOf("2011-10-02 15:00:00.123456"))), 4)
     val tdf = spark.createDataFrame(rows, schema)
 
     tdf.printSchema()

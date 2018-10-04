@@ -27,8 +27,7 @@ object CaseWhenThen {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
     // make it an RDD and convert to a DataFrame
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 
@@ -55,7 +54,6 @@ object CaseWhenThen {
          """.stripMargin)
     caseWhen0.show()
     caseWhen0.printSchema()
-
 
     //
     // Spark 1.2.0 introduced the SQL syntax

@@ -4,7 +4,6 @@ import java.io.File
 
 import org.apache.spark.sql.SparkSession
 
-
 object PartitionedTableColumnOrder {
 
   case class Fact(year: Integer, month: Integer, id: Integer, cat: Integer)
@@ -23,7 +22,6 @@ object PartitionedTableColumnOrder {
         .appName("SQL-PartitionedTableColumnOrder")
         .master("local[4]")
         .getOrCreate()
-
 
     spark.sql(
       s"""
@@ -56,7 +54,6 @@ object PartitionedTableColumnOrder {
          |    (1401, 2, 2017, 3)
       """.stripMargin)
 
-
     println("*** the rows that were inserted")
 
     val afterInserts = spark.sql(
@@ -67,8 +64,6 @@ object PartitionedTableColumnOrder {
       """.stripMargin)
 
     afterInserts.show()
-
-
 
   }
 }

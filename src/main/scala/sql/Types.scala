@@ -1,8 +1,8 @@
 package sql
 
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{Row, SQLContext, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{ Row, SQLContext, SparkSession }
+import org.apache.spark.{ SparkConf, SparkContext }
 
 //
 // NOTE: the type conversions here are a lot less lenient in Spark 1.5.0 than before
@@ -21,8 +21,7 @@ object Types {
 
     val numericRows = Seq(
       Row(1.toByte, 2.toShort, 3, 4.toLong,
-        BigDecimal(1), BigDecimal(2), 3.0f, 4.0)
-    )
+        BigDecimal(1), BigDecimal(2), 3.0f, 4.0))
     val numericRowsRDD = spark.sparkContext.parallelize(numericRows, 4)
 
     val numericSchema = StructType(
@@ -34,9 +33,7 @@ object Types {
         StructField("e", DecimalType(10, 5), true),
         StructField("f", DecimalType(20, 10), true),
         StructField("g", FloatType, true),
-        StructField("h", DoubleType, true)
-      )
-    )
+        StructField("h", DoubleType, true)))
 
     val numericDF = spark.createDataFrame(numericRowsRDD, numericSchema)
 
@@ -53,24 +50,18 @@ object Types {
         StructField("a_book_examples", BooleanType, true),
         StructField("b", NullType, true),
         StructField("c", StringType, true),
-        StructField("d", BinaryType, true)
-      )
-    )
+        StructField("d", BinaryType, true)))
 
     val complexScehma = StructType(
-        Seq(
-          StructField("a_book_examples", StructType(
-            Seq(
-              StructField("u", StringType, true),
-              StructField("v", StringType, true),
-              StructField("w", StringType, true)
-            )
-          ), true),
-          StructField("b", NullType, true),
-          StructField("c", StringType, true),
-          StructField("d", BinaryType, true)
-        )
-      )
+      Seq(
+        StructField("a_book_examples", StructType(
+          Seq(
+            StructField("u", StringType, true),
+            StructField("v", StringType, true),
+            StructField("w", StringType, true))), true),
+        StructField("b", NullType, true),
+        StructField("c", StringType, true),
+        StructField("d", BinaryType, true)))
 
   }
 }

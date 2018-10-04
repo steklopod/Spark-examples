@@ -1,7 +1,7 @@
 package pairs
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 
 //
 // Various approaches to choosing a distinguished record within groups,
@@ -15,10 +15,9 @@ object ChooseWithinGroups {
     val sc = new SparkContext(conf)
 
     val people = Seq(
-      (5,"Bob","Jones","Canada",23),
-      (7,"Fred","Smith","Canada",18),
-      (5,"Robert","Andrews","USA",32)
-    )
+      (5, "Bob", "Jones", "Canada", 23),
+      (7, "Fred", "Smith", "Canada", 18),
+      (5, "Robert", "Andrews", "USA", 32))
     val peopleRows = sc.parallelize(people, 4)
 
     type Payload = (String, String, String, Int)
@@ -33,8 +32,7 @@ object ChooseWithinGroups {
     val pairs: RDD[(Int, Payload)] = peopleRows.map({
       case (id: Int, first: String, last: String, country: String, age: Int) =>
         (id, (first, last, country, age))
-    }
-    )
+    })
 
     // reduceByKey solution
 
@@ -81,4 +79,5 @@ object ChooseWithinGroups {
 
     // foldByKey solution
 
-  }}
+  }
+}

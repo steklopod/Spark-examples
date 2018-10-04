@@ -5,7 +5,6 @@ import java.io.File
 import java.io.File
 import org.apache.spark.sql.SparkSession
 
-
 //
 // A common practice for organizing large amounts of data is to build a
 // directory hierarchy that represents the overall structure of the data, and
@@ -40,7 +39,7 @@ import org.apache.spark.sql.SparkSession
 object PartitionBy {
 
   case class Transaction(id: Long, year: Int, month: Int, day: Int,
-                         quantity: Long, price: Double)
+    quantity: Long, price: Double)
 
   def main(args: Array[String]) {
 
@@ -92,8 +91,7 @@ object PartitionBy {
       Transaction(1021, 2017, 2, 22, 100, 42.99),
       Transaction(1022, 2017, 2, 22, 75, 11.99),
       Transaction(1023, 2017, 2, 22, 50, 42.99),
-      Transaction(1024, 2017, 2, 22, 200, 99.95)
-    )
+      Transaction(1024, 2017, 2, 22, 200, 99.95))
     val transactionsDS = transactions.toDS()
 
     // the number of partitions comes from the default parallelism
@@ -115,8 +113,7 @@ object PartitionBy {
     println("*** Simple output file count: " +
       utils.PartitionedTableHierarchy.countRecursively(new File(simpleRoot), ".csv"))
 
-    utils.PartitionedTableHierarchy. printRecursively(new File(simpleRoot))
-
+    utils.PartitionedTableHierarchy.printRecursively(new File(simpleRoot))
 
     //
     // This time we'll specify a year/month folder hierarchy. We end up with
@@ -151,7 +148,7 @@ object PartitionBy {
 
     val repartitionedRoot = exampleRoot + "/Repartitioned"
 
-    transactionsDS.repartition($"year",$"month").write
+    transactionsDS.repartition($"year", $"month").write
       .partitionBy("year", "month")
       .option("header", "true")
       .csv(repartitionedRoot)
@@ -220,7 +217,6 @@ object PartitionBy {
       .filter("year = 2016")
 
     twoMonthQuery.show()
-
 
   }
 

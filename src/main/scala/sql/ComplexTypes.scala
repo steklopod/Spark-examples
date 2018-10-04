@@ -2,8 +2,8 @@ package sql
 
 import java.sql.Date
 
-import org.apache.spark.sql.{SQLContext, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{ SQLContext, SparkSession }
+import org.apache.spark.{ SparkConf, SparkContext }
 
 //
 // Explore SPark SQL's ability to deal with complex types by creating the
@@ -12,11 +12,11 @@ import org.apache.spark.{SparkConf, SparkContext}
 object ComplexTypes {
 
   case class Cust(id: Integer, name: String, trans: Seq[Transaction],
-    billing:Address, shipping:Address)
+    billing: Address, shipping: Address)
 
   case class Transaction(id: Integer, date: Date, amount: Double)
 
-  case class Address(state:String)
+  case class Address(state: String)
 
   def main(args: Array[String]) {
     val spark =
@@ -34,16 +34,15 @@ object ComplexTypes {
         Seq(Transaction(1, Date.valueOf("2012-01-01"), 100.0)),
         Address("AZ"), Address("CA")),
       Cust(2, "Acme Widgets",
-        Seq(Transaction(2, Date.valueOf("2014-06-15"), 200.0),
-            Transaction(3, Date.valueOf("2014-07-01"), 50.0)),
+        Seq(
+          Transaction(2, Date.valueOf("2014-06-15"), 200.0),
+          Transaction(3, Date.valueOf("2014-07-01"), 50.0)),
         Address("CA"), null),
       Cust(3, "Widgetry",
         Seq(Transaction(4, Date.valueOf("2014-01-01"), 150.0)),
-        Address("CA"), Address("CA"))
-    )
+        Address("CA"), Address("CA")))
     // make it an RDD and convert to a DataFrame
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
-
 
     println("*** inferred schema takes nesting and arrays into account")
     customerDF.printSchema()
@@ -99,7 +98,6 @@ object ComplexTypes {
          | ORDER BY shipping.state
         """.stripMargin)
     orderByNested.show()
-
 
   }
 }

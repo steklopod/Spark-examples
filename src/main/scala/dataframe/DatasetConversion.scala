@@ -1,6 +1,6 @@
 package dataframe
 
-import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
+import org.apache.spark.sql.{ DataFrame, Dataset, SparkSession }
 
 //
 // Explore interoperability between DataFrame and Dataset. Note that Dataset
@@ -28,11 +28,10 @@ object DatasetConversion {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
 
     // Create the DataFrame without passing through an RDD
-    val customerDF : DataFrame = spark.createDataFrame(custs)
+    val customerDF: DataFrame = spark.createDataFrame(custs)
 
     println("*** DataFrame schema")
 
@@ -55,7 +54,7 @@ object DatasetConversion {
     // BUT also notice that the columns keep their order from the DataFrame --
     // later you'll see a Dataset[StateSales] of the same type where the
     // columns have the opposite order, because of the way it was created.
-    val customerDS : Dataset[StateSales] = smallerDF.as[StateSales]
+    val customerDS: Dataset[StateSales] = smallerDF.as[StateSales]
 
     println("*** Dataset schema")
 
@@ -71,7 +70,7 @@ object DatasetConversion {
     // "untyped transformations", which produce a DataFrame. In particular,
     // you need to project using a TypedColumn to gate a Dataset.
 
-    val verySmallDS : Dataset[Double] = customerDS.select($"sales".as[Double])
+    val verySmallDS: Dataset[Double] = customerDS.select($"sales".as[Double])
 
     println("*** Dataset after projecting one column")
 
@@ -79,7 +78,7 @@ object DatasetConversion {
 
     // If you select multiple columns on a Dataset you end up with a Dataset
     // of tuple type, but the columns keep their names.
-    val tupleDS : Dataset[(String, Double)] =
+    val tupleDS: Dataset[(String, Double)] =
       customerDS.select($"state".as[String], $"sales".as[Double])
 
     println("*** Dataset after projecting two columns -- tuple version")
@@ -95,14 +94,14 @@ object DatasetConversion {
     betterDS.show()
 
     // Converting back to a DataFrame without making other changes is really easy
-    val backToDataFrame : DataFrame = tupleDS.toDF()
+    val backToDataFrame: DataFrame = tupleDS.toDF()
 
     println("*** This time as a DataFrame")
 
     backToDataFrame.show()
 
     // While converting back to a DataFrame you can rename the columns
-    val renamedDataFrame : DataFrame = tupleDS.toDF("MyState", "MySales")
+    val renamedDataFrame: DataFrame = tupleDS.toDF("MyState", "MySales")
 
     println("*** Again as a DataFrame but with renamed columns")
 

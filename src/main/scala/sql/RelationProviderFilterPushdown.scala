@@ -1,12 +1,12 @@
 package sql
 
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{Row, SQLContext, SparkSession}
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
+import org.apache.spark.sql.{ Row, SQLContext, SparkSession }
+import org.apache.spark.sql.types.{ IntegerType, StructField, StructType }
 import org.apache.spark.sql.sources._
 
-import scala.collection.mutable.{ArrayBuffer, HashMap}
+import scala.collection.mutable.{ ArrayBuffer, HashMap }
 
 //
 // Demonstrate the Spark SQL external data source API, but for
@@ -31,7 +31,7 @@ class RangeIterator(begin: Int, end: Int) extends Iterator[RangeDBRecord] {
   def hasNext: Boolean = pos <= end
 
   def next(): RangeDBRecord = {
-    val rec = RangeDBRecord(pos, pos*pos, pos*pos*pos)
+    val rec = RangeDBRecord(pos, pos * pos, pos * pos * pos)
     pos = pos + 1
     rec
   }
@@ -97,7 +97,7 @@ class FilterInterpreter(allFilters: Array[Filter]) {
     (min, max, others.toArray)
   }
 
-   private def getFilterAttribute(f: Filter): String = {
+  private def getFilterAttribute(f: Filter): String = {
     f match {
       case EqualTo(attr, v) => attr
       case GreaterThan(attr, v) => attr
@@ -124,8 +124,7 @@ class FilterInterpreter(allFilters: Array[Filter]) {
 // Extending TableScan allows us to describe the schema and
 // provide the rows when requested
 //
-case class MyPFTableScan(count: Int, partitions: Int)
-                      (@transient val sqlContext: SQLContext)
+case class MyPFTableScan(count: Int, partitions: Int)(@transient val sqlContext: SQLContext)
   extends BaseRelation with PrunedFilteredScan {
 
   // instantiate the (fake) back-end storage engine
@@ -134,8 +133,7 @@ case class MyPFTableScan(count: Int, partitions: Int)
   val schema: StructType = StructType(Seq(
     StructField("val", IntegerType, nullable = false),
     StructField("squared", IntegerType, nullable = false),
-    StructField("cubed", IntegerType, nullable = false)
-  ))
+    StructField("cubed", IntegerType, nullable = false)))
 
   // massage a back-end row into a map for uniformity
   private def makeMap(rec: RangeDBRecord): Map[String, Int] = {
@@ -147,8 +145,9 @@ case class MyPFTableScan(count: Int, partitions: Int)
   }
 
   // project down to the required columns in the right order and wrap up as a Row
-  private def projectAndWrapRow(m: Map[String, Int],
-                                requiredColumns: Array[String]): Row = {
+  private def projectAndWrapRow(
+    m: Map[String, Int],
+    requiredColumns: Array[String]): Row = {
     val l = requiredColumns.map(c => m(c))
     val r = Row.fromSeq(l)
     r
@@ -178,7 +177,8 @@ case class MyPFTableScan(count: Int, partitions: Int)
 class CustomPFRP extends RelationProvider {
 
   def createRelation(sqlContext: SQLContext, parameters: Map[String, String]) = {
-    MyPFTableScan(parameters("rows").toInt,
+    MyPFTableScan(
+      parameters("rows").toInt,
       parameters("partitions").toInt)(sqlContext)
   }
 

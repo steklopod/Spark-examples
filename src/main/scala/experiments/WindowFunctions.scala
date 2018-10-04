@@ -1,8 +1,8 @@
 package experiments
 
-import org.apache.spark.sql.{SQLContext, SparkSession}
+import org.apache.spark.sql.{ SQLContext, SparkSession }
 import org.apache.spark.sql.functions._
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 
 object WindowFunctions {
   def main(args: Array[String]) {
@@ -22,8 +22,6 @@ object WindowFunctions {
     val ldf = df.select($"id", lag($"id", 2, 0))
 
     ldf.show()
-
-
 
   }
 

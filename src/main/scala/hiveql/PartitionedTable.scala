@@ -52,7 +52,6 @@ object PartitionedTable {
       Fact(year, month, id, cat)
     })
 
-
     // make it an RDD and convert to a DataFrame
     val factsDF = spark.sparkContext.parallelize(facts, 4).toDF()
 

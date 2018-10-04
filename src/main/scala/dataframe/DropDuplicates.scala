@@ -20,8 +20,7 @@ object DropDuplicates {
       (4, "Widgets R Us", 410500.00, 0.0, "CA"),
       (3, "Widgetry", 410500.00, 200.00, "CA"),
       (5, "Ye Olde Widgete", 500.00, 0.0, "MA"),
-      (6, "Widget Co", 12000.00, 10.00, "AZ")
-    )
+      (6, "Widget Co", 12000.00, 10.00, "AZ"))
     val customerRows = spark.sparkContext.parallelize(custs, 4)
 
     // convert RDD of tuples to DataFrame by supplying column names

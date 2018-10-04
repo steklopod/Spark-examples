@@ -1,6 +1,6 @@
 package dataframe
 
-import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.{ Row, SparkSession }
 import org.apache.spark.sql.types._
 
 //
@@ -22,8 +22,7 @@ object FromRowsAndSchema {
       Row(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Row(3, "Widgetry", 410500.00, 200.00, "CA"),
       Row(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Row(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
-    )
+      Row(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
     val customerRows = spark.sparkContext.parallelize(custs, 4)
 
     val customerSchema = StructType(
@@ -32,9 +31,7 @@ object FromRowsAndSchema {
         StructField("name", StringType, true),
         StructField("sales", DoubleType, true),
         StructField("discount", DoubleType, true),
-        StructField("state", StringType, true)
-      )
-    )
+        StructField("state", StringType, true)))
 
     // put the RDD[Row] and schema together to make a DataFrame
     val customerDF = spark.createDataFrame(customerRows, customerSchema)

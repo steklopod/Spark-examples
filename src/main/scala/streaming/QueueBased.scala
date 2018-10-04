@@ -2,7 +2,7 @@ package streaming
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming._
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{ SparkConf, SparkContext }
 
 import scala.collection.mutable
 
@@ -10,7 +10,7 @@ import scala.collection.mutable
 // A utility for streaming data through an in-memory queue
 // See https://issues.apache.org/jira/browse/SPARK-17397
 //
-class QueueMaker(sc: SparkContext, ssc:StreamingContext) {
+class QueueMaker(sc: SparkContext, ssc: StreamingContext) {
 
   private val rddQueue = new mutable.Queue[RDD[Int]]()
 
@@ -19,14 +19,14 @@ class QueueMaker(sc: SparkContext, ssc:StreamingContext) {
   private var base = 1
 
   // each RDD has 100 different integers
-  private def makeRDD() : RDD[Int] = {
-    val rdd = sc.parallelize(base to base + 99 , 4)
+  private def makeRDD(): RDD[Int] = {
+    val rdd = sc.parallelize(base to base + 99, 4)
     base = base + 100
     rdd
   }
 
   // put 10 RDDs in the queue
-  def populateQueue() : Unit = {
+  def populateQueue(): Unit = {
     for (n <- 1 to 10) {
       rddQueue.enqueue(makeRDD())
     }
@@ -39,7 +39,7 @@ class QueueMaker(sc: SparkContext, ssc:StreamingContext) {
 // one per second.
 
 object QueueBasedStreaming {
-  def main (args: Array[String]) {
+  def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("QueueBasedStreaming").setMaster("local[4]")
     val sc = new SparkContext(conf)
 

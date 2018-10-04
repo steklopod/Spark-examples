@@ -1,17 +1,17 @@
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{ SparkContext, SparkConf }
 
 object Ex2_Computations {
   //
   // utilities for printing out a dependency tree
   //
-  private def showDep[T](r: RDD[T], depth: Int) : Unit = {
+  private def showDep[T](r: RDD[T], depth: Int): Unit = {
     println("".padTo(depth, ' ') + "RDD id=" + r.id)
     r.dependencies.foreach(dep => {
       showDep(dep.rdd, depth + 1)
     })
   }
-  def showDep[T](r: RDD[T]) : Unit = {
+  def showDep[T](r: RDD[T]): Unit = {
     showDep(r, 0)
   }
 
