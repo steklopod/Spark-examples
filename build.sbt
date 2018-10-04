@@ -21,5 +21,6 @@ resolvers ++= Seq(
   Resolver.sonatypeRepo("public"),
   Resolver.sonatypeRepo("snapshots"),
   Classpaths.typesafeReleases,
-  DefaultMavenRepository
+  DefaultMavenRepository,
+  Resolver.mavenLocal
 )
