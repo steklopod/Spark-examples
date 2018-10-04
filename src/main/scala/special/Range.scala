@@ -1,14 +1,15 @@
 package special
 
-import org.apache.spark.{ SparkContext, SparkConf }
+import org.apache.spark.{SparkContext, SparkConf}
 
 /**
- * Method on SparkContext creating an RDD[Long] with a range of values
- * specified by endpoints.
- */
+  * Method on SparkContext creating an RDD[Long] with a range of values
+  * specified by endpoints.
+  */
 object Range {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("DataFrame-Basic").setMaster("local[4]")
+    val conf =
+      new SparkConf().setAppName("DataFrame-Basic").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
     //

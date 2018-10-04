@@ -24,7 +24,8 @@ object ComplexType {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("Dataset-ComplexType")
         .master("local[4]")
         .getOrCreate()
@@ -37,10 +38,9 @@ object ComplexType {
 
     println("*** Example 1: nested case classes")
 
-    val segments = Seq(
-      Segment(Point(1.0, 2.0), Point(3.0, 4.0)),
-      Segment(Point(8.0, 2.0), Point(3.0, 14.0)),
-      Segment(Point(11.0, 2.0), Point(3.0, 24.0)))
+    val segments = Seq(Segment(Point(1.0, 2.0), Point(3.0, 4.0)),
+                       Segment(Point(8.0, 2.0), Point(3.0, 14.0)),
+                       Segment(Point(11.0, 2.0), Point(3.0, 24.0)))
     val segmentsDS = segments.toDS()
 
     segmentsDS.printSchema();
@@ -61,7 +61,8 @@ object ComplexType {
     val lines = Seq(
       Line("a_book_examples", Array(Point(0.0, 0.0), Point(2.0, 4.0))),
       Line("b", Array(Point(-1.0, 0.0))),
-      Line("c", Array(Point(0.0, 0.0), Point(2.0, 6.0), Point(10.0, 100.0))))
+      Line("c", Array(Point(0.0, 0.0), Point(2.0, 6.0), Point(10.0, 100.0)))
+    )
     val linesDS = lines.toDS()
 
     linesDS.printSchema()
@@ -71,7 +72,8 @@ object ComplexType {
     println("*** filter by an array element")
     linesDS
       .where($"points".getItem(2).getField("y") > 7.0)
-      .select($"name", size($"points").as("count")).show()
+      .select($"name", size($"points").as("count"))
+      .show()
 
     //
     // Example 3: maps
@@ -81,9 +83,10 @@ object ComplexType {
 
     val namedPoints = Seq(
       NamedPoints("a_book_examples", Map("p1" -> Point(0.0, 0.0))),
-      NamedPoints("b", Map(
-        "p1" -> Point(0.0, 0.0),
-        "p2" -> Point(2.0, 6.0), "p3" -> Point(10.0, 100.0))))
+      NamedPoints("b",
+                  Map("p1" -> Point(0.0, 0.0),
+                      "p2" -> Point(2.0, 6.0),
+                      "p3" -> Point(10.0, 100.0))))
     val namedPointsDS = namedPoints.toDS()
 
     namedPointsDS.printSchema()
@@ -91,7 +94,8 @@ object ComplexType {
     println("*** filter and select using map lookup")
     namedPointsDS
       .where(size($"points") > 1)
-      .select($"name", size($"points").as("count"), $"points".getItem("p1")).show()
+      .select($"name", size($"points").as("count"), $"points".getItem("p1"))
+      .show()
 
     //
     // Example 4: Option
@@ -103,7 +107,8 @@ object ComplexType {
       NameAndMaybePoint("p1", None),
       NameAndMaybePoint("p2", Some(Point(-3.1, 99.99))),
       NameAndMaybePoint("p3", Some(Point(1.0, 2.0))),
-      NameAndMaybePoint("p4", None))
+      NameAndMaybePoint("p4", None)
+    )
     val maybePointsDS = maybePoints.toDS()
 
     maybePointsDS.printSchema()
@@ -111,9 +116,11 @@ object ComplexType {
     println("*** filter by nullable column resulting from Option type")
     maybePointsDS
       .where($"point".getField("y") > 50.0)
-      .select($"name", $"point").show()
+      .select($"name", $"point")
+      .show()
 
-    println("*** again its fine also to select through a column that's sometimes null")
+    println(
+      "*** again its fine also to select through a column that's sometimes null")
     maybePointsDS.select($"point".getField("x")).show()
 
   }

@@ -1,9 +1,12 @@
 package sql
 
 import org.apache.spark.sql._
-import org.apache.spark.sql.expressions.{ MutableAggregationBuffer, UserDefinedAggregateFunction }
+import org.apache.spark.sql.expressions.{
+  MutableAggregationBuffer,
+  UserDefinedAggregateFunction
+}
 import org.apache.spark.sql.types._
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.{SparkConf, SparkContext}
 
 //
 // An example of the experimental User Defined Aggregation Function mechanism
@@ -58,7 +61,8 @@ object UDAF {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-UDAF")
         .master("local[4]")
         .getOrCreate()
@@ -71,9 +75,11 @@ object UDAF {
       (2, "Acme Widgets", 410500.00, 500.00, "CA"),
       (3, "Widgetry", 200.00, 200.00, "CA"),
       (4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      (5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
+      (5, "Ye Olde Widgete", 500.00, 0.0, "MA")
+    )
     val customerRows = spark.sparkContext.parallelize(custs, 4)
-    val customerDF = customerRows.toDF("id", "name", "sales", "discount", "state")
+    val customerDF =
+      customerRows.toDF("id", "name", "sales", "discount", "state")
 
     val mysum = new ScalaAggregateFunction()
 
@@ -87,8 +93,7 @@ object UDAF {
 
     // now use it in a query
     val sqlResult =
-      spark.sql(
-        s"""
+      spark.sql(s"""
            | SELECT state, mysum(sales) AS bigsales
            | FROM customers
            | GROUP BY state

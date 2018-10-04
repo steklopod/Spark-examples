@@ -1,11 +1,15 @@
 package sql
 
 import org.apache.spark.sql._
-import org.apache.spark.sql.types.{ DoubleType, StructType }
-import org.apache.spark.{ SparkContext, SparkConf }
+import org.apache.spark.sql.types.{DoubleType, StructType}
+import org.apache.spark.{SparkContext, SparkConf}
 
 // a case class for our sample table
-case class Cust(id: Integer, name: String, sales: Double, discounts: Double, state: String)
+case class Cust(id: Integer,
+                name: String,
+                sales: Double,
+                discounts: Double,
+                state: String)
 
 // an extra case class to show how UDFs can generate structure
 case class SalesDisc(sales: Double, discounts: Double)
@@ -18,7 +22,8 @@ object UDF {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-UDF")
         .master("local[4]")
         .getOrCreate()
@@ -31,13 +36,15 @@ object UDF {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
+    )
     val customerTable = spark.sparkContext.parallelize(custs, 4).toDF()
 
     // DSL usage -- query using a UDF but without SQL
     // (this example has been repalced by the one in dataframe.UDF)
 
-    def westernState(state: String) = Seq("CA", "OR", "WA", "AK").contains(state)
+    def westernState(state: String) =
+      Seq("CA", "OR", "WA", "AK").contains(state)
 
     // for SQL usage  we need to register the table
 
@@ -60,8 +67,7 @@ object UDF {
 
     println("UDF in a HAVING")
     val statesManyCustomers =
-      spark.sql(
-        s"""
+      spark.sql(s"""
           |SELECT state, COUNT(id) AS custCount
           |FROM customerTable
           |GROUP BY state
@@ -72,9 +78,9 @@ object UDF {
     // GROUP BY clause
 
     def stateRegion(state: String) = state match {
-      case "CA" | "AK" | "OR" | "WA" => "West"
+      case "CA" | "AK" | "OR" | "WA"               => "West"
       case "ME" | "NH" | "MA" | "RI" | "CT" | "VT" => "NorthEast"
-      case "AZ" | "NM" | "CO" | "UT" => "SouthWest"
+      case "AZ" | "NM" | "CO" | "UT"               => "SouthWest"
     }
 
     spark.udf.register("stateRegion", stateRegion _)
@@ -82,8 +88,7 @@ object UDF {
     println("UDF in a GROUP BY")
     // note the grouping column repeated since it doesn't have an alias
     val salesByRegion =
-      spark.sql(
-        s"""
+      spark.sql(s"""
           |SELECT SUM(sales), stateRegion(state) AS totalSales
           |FROM customerTable
           |GROUP BY stateRegion(state)
@@ -98,8 +103,7 @@ object UDF {
 
     println("UDF in a result")
     val customerDiscounts =
-      spark.sql(
-        s"""
+      spark.sql(s"""
           |SELECT id, discountRatio(sales, discounts) AS ratio
           |FROM customerTable
         """.stripMargin)
@@ -120,7 +124,8 @@ object UDF {
 
     println("UDF with nested query creating structured result")
     val nestedStruct =
-      spark.sql("SELECT id, sd.sales FROM (SELECT id, makeStruct(sales, discounts) AS sd FROM customerTable) AS d")
+      spark.sql(
+        "SELECT id, sd.sales FROM (SELECT id, makeStruct(sales, discounts) AS sd FROM customerTable) AS d")
     nestedStruct.foreach(r => println(r))
   }
 

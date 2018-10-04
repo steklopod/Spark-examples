@@ -3,16 +3,17 @@ package dataframe
 import org.apache.spark.sql.SparkSession
 
 /**
- * Method on SQLContext creating a DataFrame with a single column
- * named "id" of type Long.
- *
- * CAUTION: The overloads of range() have subtly different signatures
- * from the corresponding methods on SparkContext
- */
+  * Method on SQLContext creating a DataFrame with a single column
+  * named "id" of type Long.
+  *
+  * CAUTION: The overloads of range() have subtly different signatures
+  * from the corresponding methods on SparkContext
+  */
 object Range {
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("DataFrame-Range")
         .master("local[4]")
         .getOrCreate()

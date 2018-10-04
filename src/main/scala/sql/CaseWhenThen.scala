@@ -9,11 +9,16 @@ import org.apache.spark.sql.SparkSession
 // but didn't write up a persistent example until now.
 //
 object CaseWhenThen {
-  case class Cust(id: Integer, name: String, sales: Double, discount: Double, state: String)
+  case class Cust(id: Integer,
+                  name: String,
+                  sales: Double,
+                  discount: Double,
+                  state: String)
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-CaseWhenThen")
         .master("local[4]")
         .getOrCreate()
@@ -27,7 +32,8 @@ object CaseWhenThen {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
+    )
     // make it an RDD and convert to a DataFrame
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 
@@ -47,8 +53,7 @@ object CaseWhenThen {
     //
     println("*** Syntax before Spark 1.2.0")
     val caseWhen0 =
-      spark.sql(
-        s"""
+      spark.sql(s"""
            | SELECT IF(id = 1, "One", "NotOne")
            | FROM customer
          """.stripMargin)
@@ -60,8 +65,7 @@ object CaseWhenThen {
     //
     println("*** Syntax starting with Spark 1.2.0")
     val caseWhen1 =
-      spark.sql(
-        s"""
+      spark.sql(s"""
           | SELECT CASE WHEN id = 1 THEN "One" ELSE "NotOne" END
           | FROM customer
          """.stripMargin)
@@ -73,8 +77,7 @@ object CaseWhenThen {
     //
     println("*** With renaming")
     val caseWhen2 =
-      spark.sql(
-        s"""
+      spark.sql(s"""
            | SELECT
            |    CASE WHEN id = 1 THEN "One" ELSE "NotOne" END AS IdRedux
            | FROM customer
@@ -87,8 +90,7 @@ object CaseWhenThen {
     //
     println("*** With boolean combination")
     val caseWhen3 =
-      spark.sql(
-        s"""
+      spark.sql(s"""
            | SELECT
            |    CASE WHEN id = 1 OR id = 2 THEN "OneOrTwo" ELSE "NotOneOrTwo" END AS IdRedux
            | FROM customer
@@ -101,8 +103,7 @@ object CaseWhenThen {
     //
     println("*** With boolean combination on multiple columns")
     val caseWhen4 =
-      spark.sql(
-        s"""
+      spark.sql(s"""
            | SELECT
            |    CASE WHEN id = 1 OR state = 'MA' THEN "OneOrMA" ELSE "NotOneOrMA" END AS IdRedux
            | FROM customer
@@ -115,8 +116,7 @@ object CaseWhenThen {
     //
     println("*** With nested conditions")
     val caseWhen5 =
-      spark.sql(
-        s"""
+      spark.sql(s"""
            | SELECT
            |    CASE WHEN id = 1 THEN "OneOrMA"
            |    ELSE

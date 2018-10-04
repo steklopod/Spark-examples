@@ -5,19 +5,18 @@ import org.apache.spark.sql.types._
 import streaming.util.CSVFileStreamGenerator
 
 /**
- * A very basic example of structured streaming as introduced in Spark 2.0.
- *
- * A sequence of CSV files is treated as a stream and subscribed to,
- * producing a streaming DataFrame, and an aggregation is defined as
- * another streaming DataFrame.
- *
- * In this example, every time a batch of data is delivered the resulting
- * aggregation data is dumped to the console. Since the files all have
- * the same keys, each batch will have the same count for each key, but the
- * count increases by an unpredictable amount, since the number of files
- * delivered in each batch varies.
- */
-
+  * A very basic example of structured streaming as introduced in Spark 2.0.
+  *
+  * A sequence of CSV files is treated as a stream and subscribed to,
+  * producing a streaming DataFrame, and an aggregation is defined as
+  * another streaming DataFrame.
+  *
+  * In this example, every time a batch of data is delivered the resulting
+  * aggregation data is dumped to the console. Since the files all have
+  * the same keys, each batch will have the same count for each key, but the
+  * count increases by an unpredictable amount, since the number of files
+  * delivered in each batch varies.
+  */
 object BasicAggregation {
 
   def main(args: Array[String]) {
@@ -26,21 +25,17 @@ object BasicAggregation {
 
     println("*** Starting to stream")
 
-    val spark = SparkSession
-      .builder
+    val spark = SparkSession.builder
       .appName("StructuredStreaming_Basic")
       .config("spark.master", "local[4]")
       .getOrCreate()
 
     // schema for the streaming records
     val recordSchema = StructType(
-      Seq(
-        StructField("key", StringType),
-        StructField("value", IntegerType)))
+      Seq(StructField("key", StringType), StructField("value", IntegerType)))
 
     // a streaming DataFrame resulting from parsing the records of the CSV files
-    val csvDF = spark
-      .readStream
+    val csvDF = spark.readStream
       .option("sep", ",")
       .schema(recordSchema)
       .format("csv")

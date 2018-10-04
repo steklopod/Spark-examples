@@ -1,12 +1,12 @@
 package sql
 
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{ Row, SQLContext, SparkSession }
-import org.apache.spark.sql.types.{ IntegerType, StructField, StructType }
+import org.apache.spark.sql.{Row, SQLContext, SparkSession}
+import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
 import org.apache.spark.sql.sources._
 
-import scala.collection.mutable.{ ArrayBuffer, HashMap }
+import scala.collection.mutable.{ArrayBuffer, HashMap}
 
 //
 // Demonstrate the Spark SQL external data source API, but for
@@ -54,39 +54,39 @@ class FilterInterpreter2(allFilters: Array[Filter]) {
   }
 
   private def splitKeyFilter: (Option[Int], Option[Int], Array[Filter]) = {
-    val keyFilters = allAttrToFilters.getOrElse("val", new Array[Filter](0))
+    val keyFilters       = allAttrToFilters.getOrElse("val", new Array[Filter](0))
     var min: Option[Int] = None
     var max: Option[Int] = None
-    val others = new ArrayBuffer[Filter](0)
+    val others           = new ArrayBuffer[Filter](0)
     keyFilters.foreach({
-      case GreaterThan(attr, v) => min = Some(v.asInstanceOf[Int] + 1)
-      case LessThan(attr, v) => max = Some(v.asInstanceOf[Int] - 1)
+      case GreaterThan(attr, v)        => min = Some(v.asInstanceOf[Int] + 1)
+      case LessThan(attr, v)           => max = Some(v.asInstanceOf[Int] - 1)
       case GreaterThanOrEqual(attr, v) => min = Some(v.asInstanceOf[Int])
-      case LessThanOrEqual(attr, v) => max = Some(v.asInstanceOf[Int])
-      case _ => others.++=: _
+      case LessThanOrEqual(attr, v)    => max = Some(v.asInstanceOf[Int])
+      case _                           => others.++=: _
     })
     (min, max, others.toArray)
   }
 
   private def getFilterAttribute(f: Filter): String = {
     f match {
-      case EqualTo(attr, v) => attr
-      case GreaterThan(attr, v) => attr
-      case LessThan(attr, v) => attr
+      case EqualTo(attr, v)            => attr
+      case GreaterThan(attr, v)        => attr
+      case LessThan(attr, v)           => attr
       case GreaterThanOrEqual(attr, v) => attr
-      case LessThanOrEqual(attr, v) => attr
-      case In(attr, vs) => attr
+      case LessThanOrEqual(attr, v)    => attr
+      case In(attr, vs)                => attr
     }
   }
 
   private def satisfiesAll(value: Int, filters: Array[Filter]): Boolean = {
     filters.forall({
-      case EqualTo(attr, v) => value == v.asInstanceOf[Int]
-      case GreaterThan(attr, v) => value > v.asInstanceOf[Int]
-      case LessThan(attr, v) => value < v.asInstanceOf[Int]
+      case EqualTo(attr, v)            => value == v.asInstanceOf[Int]
+      case GreaterThan(attr, v)        => value > v.asInstanceOf[Int]
+      case LessThan(attr, v)           => value < v.asInstanceOf[Int]
       case GreaterThanOrEqual(attr, v) => value >= v.asInstanceOf[Int]
-      case LessThanOrEqual(attr, v) => value <= v.asInstanceOf[Int]
-      case In(attr, vs) => vs.exists(v => value == v.asInstanceOf[Int])
+      case LessThanOrEqual(attr, v)    => value <= v.asInstanceOf[Int]
+      case In(attr, vs)                => vs.exists(v => value == v.asInstanceOf[Int])
     })
   }
 }
@@ -95,31 +95,35 @@ class FilterInterpreter2(allFilters: Array[Filter]) {
 // Extending TableScan allows us to describe the schema and
 // provide the rows when requested
 //
-case class MyPFTableScan2(count: Int, partitions: Int)(@transient val sqlContext: SQLContext)
-  extends BaseRelation with PrunedFilteredScan {
+case class MyPFTableScan2(count: Int, partitions: Int)(
+    @transient val sqlContext: SQLContext)
+    extends BaseRelation
+    with PrunedFilteredScan {
 
   // instantiate the (fake) back-end storage engine
   val db = new RangeDB(count)
 
-  val schema: StructType = StructType(Seq(
-    StructField("val", IntegerType, nullable = false),
-    StructField("data", StructType(Seq(
-      StructField("squared", IntegerType, nullable = false),
-      StructField("cubed", IntegerType, nullable = false))))))
+  val schema: StructType = StructType(
+    Seq(
+      StructField("val", IntegerType, nullable = false),
+      StructField("data",
+                  StructType(
+                    Seq(StructField("squared", IntegerType, nullable = false),
+                        StructField("cubed", IntegerType, nullable = false))))
+    ))
 
   // massage a back-end row into a map for uniformity
   private def makeMap(rec: RangeDBRecord): Map[String, Int] = {
     val m = new HashMap[String, Int]()
-    m += ("val" -> rec.key)
+    m += ("val"     -> rec.key)
     m += ("squared" -> rec.squared)
-    m += ("cubed" -> rec.cubed)
+    m += ("cubed"   -> rec.cubed)
     m.toMap
   }
 
   // project down to the required columns in the right order and wrap up as a Row
-  private def projectAndWrapRow(
-    m: Map[String, Int],
-    requiredColumns: Array[String]): Row = {
+  private def projectAndWrapRow(m: Map[String, Int],
+                                requiredColumns: Array[String]): Row = {
     //val l = requiredColumns.map(c => m(c))
     //val r = Row.fromSeq(l)
     val r = Row(m("val"), Row(m("squared"), m("cubed")))
@@ -127,12 +131,14 @@ case class MyPFTableScan2(count: Int, partitions: Int)(@transient val sqlContext
   }
 
   // Get the data, filter and project it, and return as an RDD
-  def buildScan(requiredColumns: Array[String], filters: Array[Filter]): RDD[Row] = {
+  def buildScan(requiredColumns: Array[String],
+                filters: Array[Filter]): RDD[Row] = {
     // organzie the filters
     val filterInterpreter = new FilterInterpreter2(filters)
     // get the data, pushing as much filtering to the back-end as possible
     // (in this case, not much)
-    val rowIterator = db.getRecords(filterInterpreter.min, filterInterpreter.max)
+    val rowIterator =
+      db.getRecords(filterInterpreter.min, filterInterpreter.max)
     val rows = rowIterator
       .map(rec => makeMap(rec))
       .filter(r => filterInterpreter.apply(r))
@@ -149,10 +155,10 @@ case class MyPFTableScan2(count: Int, partitions: Int)(@transient val sqlContext
 //
 class CustomPFRP2 extends RelationProvider {
 
-  def createRelation(sqlContext: SQLContext, parameters: Map[String, String]) = {
-    MyPFTableScan2(
-      parameters("rows").toInt,
-      parameters("partitions").toInt)(sqlContext)
+  def createRelation(sqlContext: SQLContext,
+                     parameters: Map[String, String]) = {
+    MyPFTableScan2(parameters("rows").toInt, parameters("partitions").toInt)(
+      sqlContext)
   }
 
 }
@@ -160,15 +166,15 @@ class CustomPFRP2 extends RelationProvider {
 object ExternalNonRectangular {
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-ExternalNonRectangular")
         .master("local[4]")
         .getOrCreate()
 
     // register it as a temporary table to be queried
     // (could register several of these with different parameter values)
-    spark.sql(
-      s"""
+    spark.sql(s"""
         |CREATE TEMPORARY VIEW dataTable
         |USING sql.CustomPFRP2
         |OPTIONS (partitions '9', rows '50')
@@ -177,8 +183,7 @@ object ExternalNonRectangular {
     // query the table we registered, using its column names
     // NOTE: requests the columns val, cubed, squared in that order!
     val data =
-      spark.sql(
-        s"""
+      spark.sql(s"""
           |SELECT val, data.cubed
           |FROM dataTable
           |WHERE val <= 40 AND data.squared >= 900

@@ -1,7 +1,7 @@
 package sql
 
-import org.apache.spark.sql.{ SQLContext, SparkSession }
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.sql.{SQLContext, SparkSession}
+import org.apache.spark.{SparkConf, SparkContext}
 
 //
 // Define data in terms of a case class, convert it to a DataFrame,
@@ -9,11 +9,16 @@ import org.apache.spark.{ SparkConf, SparkContext }
 // and the ones resulting from the queries, and see their schema.
 //
 object Basic {
-  case class Cust(id: Integer, name: String, sales: Double, discount: Double, state: String)
+  case class Cust(id: Integer,
+                  name: String,
+                  sales: Double,
+                  discount: Double,
+                  state: String)
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-Basic")
         .master("local[4]")
         .getOrCreate()
@@ -27,7 +32,8 @@ object Basic {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
+    )
     // make it an RDD and convert to a DataFrame
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 
@@ -59,8 +65,7 @@ object Basic {
     //
     println("*** Very simple query with a filter")
     val californiaCust =
-      spark.sql(
-        s"""
+      spark.sql(s"""
           | SELECT id, name, sales
           | FROM customer
           | WHERE state = 'CA'
@@ -68,7 +73,8 @@ object Basic {
     californiaCust.show()
     californiaCust.printSchema()
 
-    println("*** Queries are case sensitive by default, but this can be disabled")
+    println(
+      "*** Queries are case sensitive by default, but this can be disabled")
 
     spark.conf.set("spark.sql.caseSensitive", "false")
     //

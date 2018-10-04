@@ -1,9 +1,12 @@
 package sql
 
 import org.apache.spark.sql._
-import org.apache.spark.sql.expressions.{ MutableAggregationBuffer, UserDefinedAggregateFunction }
+import org.apache.spark.sql.expressions.{
+  MutableAggregationBuffer,
+  UserDefinedAggregateFunction
+}
 import org.apache.spark.sql.types._
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.{SparkConf, SparkContext}
 
 //
 // This builds on UDAF.scala and UDAF2.scala to illustrate an
@@ -64,16 +67,14 @@ object UDAF_Multi {
 
     // the entire aggregation buffer is returned as a struct
     def evaluate(buffer: Row): Any = {
-      Row(
-        buffer.getLong(0),
-        buffer.getLong(1),
-        buffer.getDouble(2))
+      Row(buffer.getLong(0), buffer.getLong(1), buffer.getDouble(2))
     }
   }
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-UDAF_Multi")
         .master("local[4]")
         .getOrCreate()
@@ -88,9 +89,11 @@ object UDAF_Multi {
       (3, "Widgetry", Some(200.00), 200.00, "CA"),
       (4, "Widgets R Us", None, 0.0, "CA"),
       (5, "Ye Olde Widgete", Some(500.00), 0.0, "MA"),
-      (6, "Charlestown Widget", None, 0.0, "MA"))
+      (6, "Charlestown Widget", None, 0.0, "MA")
+    )
     val customerRows = spark.sparkContext.parallelize(custs, 4)
-    val customerDF = customerRows.toDF("id", "name", "sales", "discount", "state")
+    val customerDF =
+      customerRows.toDF("id", "name", "sales", "discount", "state")
 
     val mystats = new ScalaAggregateFunction()
 
@@ -104,8 +107,7 @@ object UDAF_Multi {
 
     // now use it in a query
     val sqlResult =
-      spark.sql(
-        s"""
+      spark.sql(s"""
            | SELECT state, stats(sales) AS s
            | FROM customers
            | GROUP BY state
@@ -117,8 +119,7 @@ object UDAF_Multi {
     // getting separate columns
     // now use it in a query
     val sqlResult2 =
-      spark.sql(
-        s"""
+      spark.sql(s"""
             | SELECT state, s.rows, s.count, s.sum FROM (
             |   SELECT state, stats(sales) AS s
             |   FROM customers

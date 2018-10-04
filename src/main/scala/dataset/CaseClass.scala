@@ -14,17 +14,17 @@ object CaseClass {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("Dataset-CaseClass")
         .master("local[4]")
         .getOrCreate()
 
     import spark.implicits._
 
-    val numbers = Seq(
-      Number(1, "one", "un"),
-      Number(2, "two", "deux"),
-      Number(3, "three", "trois"))
+    val numbers = Seq(Number(1, "one", "un"),
+                      Number(2, "two", "deux"),
+                      Number(3, "three", "trois"))
     val numberDS = numbers.toDS()
 
     println("*** case class Dataset types")

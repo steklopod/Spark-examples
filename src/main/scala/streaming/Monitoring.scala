@@ -1,8 +1,11 @@
 package streaming
 
-import org.apache.spark.streaming.scheduler.{ StreamingListenerBatchCompleted, StreamingListener }
-import org.apache.spark.{ SparkContext, SparkConf }
-import org.apache.spark.streaming.{ Seconds, StreamingContext }
+import org.apache.spark.streaming.scheduler.{
+  StreamingListenerBatchCompleted,
+  StreamingListener
+}
+import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 import scala.language.postfixOps
 
@@ -10,14 +13,14 @@ import scala.language.postfixOps
 // streaming context on which it is registered. However, it sums the record
 // count for only one stream ID, which is passed into the constructor.
 // It can be called at any time to get the current record count.
-private class SimpleListener(val streamId: Int)
-  extends StreamingListener {
+private class SimpleListener(val streamId: Int) extends StreamingListener {
 
   private var recordCounter: Long = 0
 
   def recordsProcessed = synchronized { recordCounter }
 
-  override def onBatchCompleted(batchCompleted: StreamingListenerBatchCompleted) = synchronized {
+  override def onBatchCompleted(
+      batchCompleted: StreamingListenerBatchCompleted) = synchronized {
 
     val optInfo = batchCompleted.batchInfo.streamIdToInputInfo.get(streamId)
     optInfo.foreach(info => recordCounter = recordCounter + info.numRecords)

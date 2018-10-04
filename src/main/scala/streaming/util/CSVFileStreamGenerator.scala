@@ -5,20 +5,22 @@ import java.io.File
 import scala.util.Random
 
 /**
- * A utility for creating a sequence of files of integers in the file system
- * so that Spark can treat them like a stream. This follows a standard pattern
- * to ensure correctness: each file is first created in another folder and then
- * atomically renamed into the destination folder so that the file's point of
- * creation is unambiguous, and is correctly recognized by the streaming
- * mechanism.
- *
- * Each generated file has the same number of key/value pairs, where the
- * keys have the same names from file to file, and the values are random
- * numbers, and thus vary from file to file.
- *
- * This class is used by several of the streaming examples.
- */
-class CSVFileStreamGenerator(nFiles: Int, nRecords: Int, betweenFilesMsec: Int) {
+  * A utility for creating a sequence of files of integers in the file system
+  * so that Spark can treat them like a stream. This follows a standard pattern
+  * to ensure correctness: each file is first created in another folder and then
+  * atomically renamed into the destination folder so that the file's point of
+  * creation is unambiguous, and is correctly recognized by the streaming
+  * mechanism.
+  *
+  * Each generated file has the same number of key/value pairs, where the
+  * keys have the same names from file to file, and the values are random
+  * numbers, and thus vary from file to file.
+  *
+  * This class is used by several of the streaming examples.
+  */
+class CSVFileStreamGenerator(nFiles: Int,
+                             nRecords: Int,
+                             betweenFilesMsec: Int) {
 
   private val root =
     new File(File.separator + "tmp" + File.separator + "streamFiles")

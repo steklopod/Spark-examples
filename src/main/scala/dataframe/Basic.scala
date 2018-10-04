@@ -9,11 +9,16 @@ import org.apache.spark.sql.SparkSession
 // FromRowsAndSchema.scala to see how to do that.
 //
 object Basic {
-  case class Cust(id: Integer, name: String, sales: Double, discount: Double, state: String)
+  case class Cust(id: Integer,
+                  name: String,
+                  sales: Double,
+                  discount: Double,
+                  state: String)
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("DataFrame-Basic")
         .master("local[4]")
         .getOrCreate()
@@ -27,7 +32,8 @@ object Basic {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
+    )
     // make it an RDD and convert to a DataFrame
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 

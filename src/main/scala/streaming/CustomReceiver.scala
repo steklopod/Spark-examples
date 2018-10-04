@@ -1,11 +1,11 @@
 package streaming
 
-import org.apache.spark.{ SparkContext, SparkConf }
+import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.storage.StorageLevel
-import org.apache.spark.streaming.{ Seconds, StreamingContext }
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.receiver.Receiver
 
-import scala.concurrent.{ Await, Promise }
+import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration._
 import scala.util.Success
 import scala.language.postfixOps
@@ -17,8 +17,8 @@ import scala.language.postfixOps
 // to do so by the streaming context.
 //
 class CustomReceiver
-  extends Receiver[String](StorageLevel.MEMORY_ONLY)
-  with Serializable {
+    extends Receiver[String](StorageLevel.MEMORY_ONLY)
+    with Serializable {
 
   //
   // Two way communication with the receiver thread: one promise/future
@@ -30,10 +30,10 @@ class CustomReceiver
   private class Synchronization {
     // this is completed to request that the loop stop
     val promiseToTerminate = Promise[Unit]()
-    val futureTermination = promiseToTerminate.future
+    val futureTermination  = promiseToTerminate.future
 
     // this is completed when the loop has stopped
-    val promiseToStop = Promise[Unit]()
+    val promiseToStop  = Promise[Unit]()
     val futureStopping = promiseToStop.future
   }
 

@@ -1,13 +1,14 @@
 import scala.collection.Iterator
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ SparkException, SparkContext, SparkConf }
+import org.apache.spark.{SparkException, SparkContext, SparkConf}
 
 import scala.collection.mutable.ListBuffer
 
 object Ex3_CombiningRDDs {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("Ex3_CombiningRDDs").setMaster("local[4]")
+    val conf =
+      new SparkConf().setAppName("Ex3_CombiningRDDs").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
     // put some data in an RDD
@@ -21,7 +22,8 @@ object Ex3_CombiningRDDs {
     println("There are " + consonants.count() + " consonants")
 
     val vowelsNotLetters = vowels.subtract(letters)
-    println("There are " + vowelsNotLetters.count() + " vowels that aren't letters")
+    println(
+      "There are " + vowelsNotLetters.count() + " vowels that aren't letters")
 
     // union
     val lettersAgain = consonants ++ vowels
@@ -39,7 +41,7 @@ object Ex3_CombiningRDDs {
 
     // intersection
     val earlyLetters = sc.parallelize('a' to 'l', 2)
-    val earlyVowels = earlyLetters.intersection(vowels)
+    val earlyVowels  = earlyLetters.intersection(vowels)
     println("The early vowels:")
     earlyVowels.foreach(println)
 
@@ -71,7 +73,7 @@ object Ex3_CombiningRDDs {
     // of communication, so, as we'll see in later examples, we have to
     // fix the partitioning ourselves
     val twentySixBadPart = sc.parallelize(101 to 126, 3)
-    val cantGet = letters.zip(twentySixBadPart)
+    val cantGet          = letters.zip(twentySixBadPart)
     try {
       cantGet foreach {
         case (c, i) => println(i + ":  " + c)
@@ -102,7 +104,8 @@ object Ex3_CombiningRDDs {
     // happy -- it's an interesting exercise to remove some of them and read
     // the complaints
 
-    def zipFunc(lIter: Iterator[Char], nIter: Iterator[Int]): Iterator[(Char, Int)] = {
+    def zipFunc(lIter: Iterator[Char],
+                nIter: Iterator[Int]): Iterator[(Char, Int)] = {
       val res = new ListBuffer[(Char, Int)]
       while (lIter.hasNext || nIter.hasNext) {
         if (lIter.hasNext && nIter.hasNext) {

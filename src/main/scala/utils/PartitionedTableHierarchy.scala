@@ -3,14 +3,14 @@ package utils
 import java.io.File
 
 /**
- * Some utilities for use my multiple examples that deal with directory
- * hierarchy, especially to illustrate partitioned tables stored in HDFS.
- */
+  * Some utilities for use my multiple examples that deal with directory
+  * hierarchy, especially to illustrate partitioned tables stored in HDFS.
+  */
 object PartitionedTableHierarchy {
 
   /**
-   * Clean up the output from the last run
-   */
+    * Clean up the output from the last run
+    */
   def deleteRecursively(file: File): Unit = {
     if (file.isDirectory)
       file.listFiles.foreach(deleteRecursively)
@@ -19,8 +19,8 @@ object PartitionedTableHierarchy {
   }
 
   /**
-   * Count the number of generated files with the given suffix
-   */
+    * Count the number of generated files with the given suffix
+    */
   def countRecursively(file: File, suffix: String): Int = {
     if (file.isDirectory) {
       val counts = file.listFiles.map(f => countRecursively(f, suffix))
@@ -31,8 +31,8 @@ object PartitionedTableHierarchy {
   }
 
   /**
-   * Print the directory hierarchy
-   */
+    * Print the directory hierarchy
+    */
   def printRecursively(file: File, indent: Int = 0): Unit = {
     0.to(indent).foreach(i => print("  "))
     if (file.isDirectory) {

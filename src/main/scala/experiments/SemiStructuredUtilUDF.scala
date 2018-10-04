@@ -1,7 +1,7 @@
 package experiments
 
-import org.apache.spark.sql.{ Row, SQLContext, SparkSession }
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.sql.{Row, SQLContext, SparkSession}
+import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -14,14 +14,14 @@ object SemiStructuredUtilUDF {
   def isAtomic(o: AnyRef): Boolean = {
     o match {
       case l: ArrayBuffer[_] => false
-      case _ => true
+      case _                 => true
     }
   }
 
   def isString(o: AnyRef): Boolean = {
     o match {
       case s: String => true
-      case _ => false
+      case _         => false
     }
   }
 
@@ -35,29 +35,29 @@ object SemiStructuredUtilUDF {
   def isArray(o: AnyRef): Boolean = {
     o match {
       case l: ArrayBuffer[_] => true
-      case _ => false
+      case _                 => false
     }
   }
 
   def arrayLength(o: AnyRef): Int = {
     o match {
       case l: ArrayBuffer[_] => l.size
-      case null => 0
-      case _ => 1
+      case null              => 0
+      case _                 => 1
     }
   }
 
   def isStruct(o: AnyRef): Boolean = {
     o match {
       case r: Row => true
-      case _ => false
+      case _      => false
     }
   }
 
   def arrayContains(a: AnyRef, v: AnyRef): Boolean = {
     a match {
       case l: ArrayBuffer[_] => l.contains(v)
-      case _ => false
+      case _                 => false
     }
   }
 
@@ -68,7 +68,8 @@ object SemiStructuredUtilUDF {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("Experiments")
         .master("local[4]")
         .getOrCreate()

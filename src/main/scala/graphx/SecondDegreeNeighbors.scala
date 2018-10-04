@@ -2,7 +2,7 @@ package graphx
 
 import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.{SparkConf, SparkContext}
 
 //
 // Create a graph of second degree neighbors, as in
@@ -10,7 +10,8 @@ import org.apache.spark.{ SparkConf, SparkContext }
 //
 object SecondDegreeNeighbors {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("SecondDegreeNeighbors").setMaster("local[4]")
+    val conf =
+      new SparkConf().setAppName("SecondDegreeNeighbors").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
     //
@@ -21,7 +22,8 @@ object SecondDegreeNeighbors {
       sc.parallelize(Array((1L, ""), (2L, ""), (4L, ""), (6L, "")))
 
     val edges: RDD[Edge[String]] =
-      sc.parallelize(Array(Edge(1L, 2L, ""), Edge(1L, 4L, ""), Edge(1L, 6L, "")))
+      sc.parallelize(
+        Array(Edge(1L, 2L, ""), Edge(1L, 4L, ""), Edge(1L, 6L, "")))
 
     val inputGraph = Graph(vertices, edges)
 
@@ -47,21 +49,22 @@ object SecondDegreeNeighbors {
     //
 
     val ngVertices: VertexRDD[Set[VertexId]] =
-      successorSetGraph.aggregateMessages[Set[VertexId]](
-        triplet => triplet.sendToDst(triplet.srcAttr.toSet),
-        (s1, s2) => s1 ++ s2).mapValues[Set[VertexId]](
-          (id: VertexId, neighbors: Set[VertexId]) => neighbors - id)
+      successorSetGraph
+        .aggregateMessages[Set[VertexId]](
+          triplet => triplet.sendToDst(triplet.srcAttr.toSet),
+          (s1, s2) => s1 ++ s2)
+        .mapValues[Set[VertexId]]((id: VertexId, neighbors: Set[VertexId]) =>
+          neighbors - id)
 
     //
     // Create an edge for each neighbor relationship
     //
 
-    val ngEdges = ngVertices.flatMap[Edge[String]](
-      {
-        case (source: VertexId, allDests: Set[VertexId]) => {
-          allDests.map((dest: VertexId) => Edge(source, dest, ""))
-        }
-      })
+    val ngEdges = ngVertices.flatMap[Edge[String]]({
+      case (source: VertexId, allDests: Set[VertexId]) => {
+        allDests.map((dest: VertexId) => Edge(source, dest, ""))
+      }
+    })
 
     //
     // Now put it all together

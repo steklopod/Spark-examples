@@ -1,5 +1,5 @@
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ SparkContext, SparkConf }
+import org.apache.spark.{SparkContext, SparkConf}
 
 object Ex2_Computations {
   //
@@ -16,12 +16,13 @@ object Ex2_Computations {
   }
 
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("Ex2_Computations").setMaster("local[4]")
+    val conf =
+      new SparkConf().setAppName("Ex2_Computations").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
     // set up a simple computation
-    val numbers = sc.parallelize(1 to 10, 4)
-    val bigger = numbers.map(n => n * 100)
+    val numbers     = sc.parallelize(1 to 10, 4)
+    val bigger      = numbers.map(n => n * 100)
     val biggerStill = bigger.map(n => n + 1)
 
     println("Debug string for the RDD 'biggerStill'")
@@ -50,7 +51,8 @@ object Ex2_Computations {
     println(moreNumbers.toDebugString)
     showDep(moreNumbers)
 
-    println("has RDD 'moreNumbers' been checkpointed? : " + moreNumbers.isCheckpointed)
+    println(
+      "has RDD 'moreNumbers' been checkpointed? : " + moreNumbers.isCheckpointed)
     // set moreNumbers up to be checkpointed
     sc.setCheckpointDir("/tmp/sparkcps")
     moreNumbers.checkpoint()

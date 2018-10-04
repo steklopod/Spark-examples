@@ -1,17 +1,22 @@
 package dataframe
 
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.{ Column, SparkSession }
+import org.apache.spark.sql.{Column, SparkSession}
 
 //
 // Shows various forms of grouping and aggregation.
 //
 object GroupingAndAggregation {
-  case class Cust(id: Integer, name: String, sales: Double, discount: Double, state: String)
+  case class Cust(id: Integer,
+                  name: String,
+                  sales: Double,
+                  discount: Double,
+                  state: String)
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("DataFrame-GroupingAndAggregation")
         .master("local[4]")
         .getOrCreate()
@@ -25,7 +30,8 @@ object GroupingAndAggregation {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
+    )
     // make it an RDD and convert to a DataFrame
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 

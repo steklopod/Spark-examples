@@ -41,7 +41,7 @@ object O1_WordCount {
       //печатаем ТОП-5 пар по убыванию {слово -> n}, где n - кол-во вхождений слова
       case _ => {
         val wc =
-      ListMap(words.countByValue().toSeq.sortWith(_._2 > _._2): _*).take(5)
+          ListMap(words.countByValue().toSeq.sortWith(_._2 > _._2): _*).take(5)
         println(wc.mkString(",\n"))
       }
     }

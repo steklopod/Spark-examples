@@ -1,5 +1,10 @@
 import org.apache.spark.util.AccumulatorV2
-import org.apache.spark.{ AccumulableParam, AccumulatorParam, SparkConf, SparkContext }
+import org.apache.spark.{
+  AccumulableParam,
+  AccumulatorParam,
+  SparkConf,
+  SparkContext
+}
 
 import scala.collection.mutable
 
@@ -22,17 +27,20 @@ object Ex6_Accumulators {
   // It's based on a more abstract version int he Java sources that's not
   // exposed through the public API
   //
-  class StringSetAccumulator extends AccumulatorV2[String, java.util.Set[String]] {
-    private val _set = Collections.synchronizedSet(new java.util.HashSet[String]())
+  class StringSetAccumulator
+      extends AccumulatorV2[String, java.util.Set[String]] {
+    private val _set =
+      Collections.synchronizedSet(new java.util.HashSet[String]())
     override def isZero: Boolean = _set.isEmpty
     override def copy(): AccumulatorV2[String, java.util.Set[String]] = {
       val newAcc = new StringSetAccumulator()
       newAcc._set.addAll(_set)
       newAcc
     }
-    override def reset(): Unit = _set.clear()
+    override def reset(): Unit        = _set.clear()
     override def add(v: String): Unit = _set.add(v)
-    override def merge(other: AccumulatorV2[String, java.util.Set[String]]): Unit = {
+    override def merge(
+        other: AccumulatorV2[String, java.util.Set[String]]): Unit = {
       _set.addAll(other.value)
     }
     override def value: java.util.Set[String] = _set
@@ -43,8 +51,10 @@ object Ex6_Accumulators {
   // that two hash maps have to be merged carefully to combine the counts from
   // both both sides
   //
-  class CharCountingAccumulator extends AccumulatorV2[Char, java.util.Map[Char, Int]] {
-    private val _map = Collections.synchronizedMap(new java.util.HashMap[Char, Int]())
+  class CharCountingAccumulator
+      extends AccumulatorV2[Char, java.util.Map[Char, Int]] {
+    private val _map =
+      Collections.synchronizedMap(new java.util.HashMap[Char, Int]())
     override def isZero: Boolean = _map.isEmpty
     override def copy(): AccumulatorV2[Char, java.util.Map[Char, Int]] = {
       val newAcc = new CharCountingAccumulator()
@@ -55,7 +65,8 @@ object Ex6_Accumulators {
     override def add(v: Char): Unit = {
       _map(v) = (if (_map.contains(v)) _map(v) else 0) + 1
     }
-    override def merge(other: AccumulatorV2[Char, java.util.Map[Char, Int]]): Unit = {
+    override def merge(
+        other: AccumulatorV2[Char, java.util.Map[Char, Int]]): Unit = {
       other.value.foreach {
         case (key, count) =>
           _map(key) = (if (_map.contains(key)) _map(key) else 0) + count
@@ -66,12 +77,14 @@ object Ex6_Accumulators {
   }
 
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("Ex6_Accumulators").setMaster("local[4]")
+    val conf =
+      new SparkConf().setAppName("Ex6_Accumulators").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
     // an RDD containing names
-    val words = sc.parallelize(Seq("Fred", "Bob", "Francis",
-      "James", "Frederick", "Frank", "Joseph"), 4)
+    val words = sc.parallelize(
+      Seq("Fred", "Bob", "Francis", "James", "Frederick", "Frank", "Joseph"),
+      4)
 
     //
     // Example 1: use a simple counter to keep track of the number of words
@@ -111,7 +124,8 @@ object Ex6_Accumulators {
     sc.register(counts)
     words.foreach(w => counts.add(w.charAt(0)))
     counts.value.foreach {
-      case (initial, times) => println(times + " names start with '" + initial + "'")
+      case (initial, times) =>
+        println(times + " names start with '" + initial + "'")
     }
 
     // TODO: spark.util.StatCounter

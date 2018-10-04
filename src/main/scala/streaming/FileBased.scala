@@ -3,7 +3,7 @@ package streaming
 import java.io.File
 
 import org.apache.spark.streaming._
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.{SparkConf, SparkContext}
 import streaming.util.CSVFileStreamGenerator
 
 import scala.util.Random
@@ -18,12 +18,13 @@ import scala.util.Random
 
 object FileBasedStreaming {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("FileBasedStreaming").setMaster("local[4]")
+    val conf =
+      new SparkConf().setAppName("FileBasedStreaming").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
     // streams will produce data every second
     val ssc = new StreamingContext(sc, Seconds(1))
-    val fm = new CSVFileStreamGenerator(10, 100, 500)
+    val fm  = new CSVFileStreamGenerator(10, 100, 500)
 
     // create the stream
     val stream = ssc.textFileStream(fm.dest.getAbsolutePath)

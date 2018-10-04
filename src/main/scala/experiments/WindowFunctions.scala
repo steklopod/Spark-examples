@@ -1,13 +1,14 @@
 package experiments
 
-import org.apache.spark.sql.{ SQLContext, SparkSession }
+import org.apache.spark.sql.{SQLContext, SparkSession}
 import org.apache.spark.sql.functions._
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.{SparkConf, SparkContext}
 
 object WindowFunctions {
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("Experiments")
         .master("local[4]")
         .getOrCreate()

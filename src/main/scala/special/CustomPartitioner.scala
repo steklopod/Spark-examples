@@ -1,7 +1,7 @@
 package special
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ Partitioner, SparkContext, SparkConf }
+import org.apache.spark.{Partitioner, SparkContext, SparkConf}
 import org.apache.spark.SparkContext._
 
 class SpecialPartitioner extends Partitioner {
@@ -10,7 +10,7 @@ class SpecialPartitioner extends Partitioner {
   def getPartition(key: Any): Int = {
     key match {
       case (x, y: Int, z) => y % numPartitions
-      case _ => throw new ClassCastException
+      case _              => throw new ClassCastException
     }
   }
 }
@@ -24,15 +24,16 @@ object CustomPartitioner {
     // we need to loop sequentially so we can see them in order: use collect()
     partitions.zipWithIndex().collect().foreach {
       case (a, i) => {
-        println("Partition " + i + " contents (count " + a.count(_ => true) + "):" +
-          a.foldLeft("")((e, s) => e + " " + s))
+        println(
+          "Partition " + i + " contents (count " + a.count(_ => true) + "):" +
+            a.foldLeft("")((e, s) => e + " " + s))
       }
     }
   }
 
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("Streaming").setMaster("local[4]")
-    val sc = new SparkContext(conf)
+    val sc   = new SparkContext(conf)
 
     val triplets =
       for (x <- 1 to 3; y <- 1 to 20; z <- 'a' to 'd')

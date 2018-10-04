@@ -1,7 +1,10 @@
 package dataframe
 
 import org.apache.spark.sql._
-import org.apache.spark.sql.expressions.{ MutableAggregationBuffer, UserDefinedAggregateFunction }
+import org.apache.spark.sql.expressions.{
+  MutableAggregationBuffer,
+  UserDefinedAggregateFunction
+}
 import org.apache.spark.sql.types._
 
 //
@@ -57,7 +60,8 @@ object UDAF {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("DataFrame-UDAF")
         .master("local[4]")
         .getOrCreate()
@@ -70,15 +74,18 @@ object UDAF {
       (2, "Acme Widgets", 410500.00, 500.00, "CA"),
       (3, "Widgetry", 200.00, 200.00, "CA"),
       (4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      (5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
+      (5, "Ye Olde Widgete", 500.00, 0.0, "MA")
+    )
     val customerRows = spark.sparkContext.parallelize(custs, 4)
-    val customerDF = customerRows.toDF("id", "name", "sales", "discount", "state")
+    val customerDF =
+      customerRows.toDF("id", "name", "sales", "discount", "state")
 
     val mysum = new ScalaAggregateFunction()
 
     customerDF.printSchema()
 
-    val results = customerDF.groupBy("state").agg(mysum($"sales").as("bigsales"))
+    val results =
+      customerDF.groupBy("state").agg(mysum($"sales").as("bigsales"))
 
     results.printSchema()
     results.show()

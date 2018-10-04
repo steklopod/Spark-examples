@@ -9,7 +9,8 @@ object Basic {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("Dataset-Basic")
         .master("local[4]")
         .getOrCreate()
@@ -17,7 +18,7 @@ object Basic {
     import spark.implicits._
 
     // Create a tiny Dataset of integers
-    val s = Seq(10, 11, 12, 13, 14, 15)
+    val s  = Seq(10, 11, 12, 13, 14, 15)
     val ds = s.toDS()
 
     println("*** only one column, and it always has the same name")
@@ -39,7 +40,8 @@ object Basic {
     println("*** size of the range")
     println(s2.size)
 
-    val tuples = Seq((1, "one", "un"), (2, "two", "deux"), (3, "three", "trois"))
+    val tuples =
+      Seq((1, "one", "un"), (2, "two", "deux"), (3, "three", "trois"))
     val tupleDS = tuples.toDS()
 
     println("*** Tuple Dataset types")

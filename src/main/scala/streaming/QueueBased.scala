@@ -2,7 +2,7 @@ package streaming
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming._
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable
 
@@ -40,12 +40,13 @@ class QueueMaker(sc: SparkContext, ssc: StreamingContext) {
 
 object QueueBasedStreaming {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("QueueBasedStreaming").setMaster("local[4]")
+    val conf =
+      new SparkConf().setAppName("QueueBasedStreaming").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
     // streams will produce data every second
     val ssc = new StreamingContext(sc, Seconds(1))
-    val qm = new QueueMaker(sc, ssc)
+    val qm  = new QueueMaker(sc, ssc)
 
     // create the stream
     val stream = qm.inputStream

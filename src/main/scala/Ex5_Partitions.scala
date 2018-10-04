@@ -1,9 +1,9 @@
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ SparkContext, SparkConf }
+import org.apache.spark.{SparkContext, SparkConf}
 
 import org.apache.spark.SparkContext._
 
-import scala.collection.{ mutable, Iterator }
+import scala.collection.{mutable, Iterator}
 
 object Ex5_Partitions {
 
@@ -16,14 +16,16 @@ object Ex5_Partitions {
     // we need to loop sequentially so we can see them in order: use collect()
     partitions.zipWithIndex().collect().foreach {
       case (a, i) => {
-        println("Partition " + i + " contents:" +
-          a.foldLeft("")((e, s) => e + " " + s))
+        println(
+          "Partition " + i + " contents:" +
+            a.foldLeft("")((e, s) => e + " " + s))
       }
     }
   }
 
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("Ex5_Partitions").setMaster("local[4]")
+    val conf =
+      new SparkConf().setAppName("Ex5_Partitions").setMaster("local[4]")
     val sc = new SparkContext(conf)
 
     // look at the distribution of numbers across partitions
@@ -55,7 +57,8 @@ object Ex5_Partitions {
 
     // but there IS a way to calculate the difference without
     // introducing communications
-    def subtractFunc(wholeIter: Iterator[Int], partIter: Iterator[Int]): Iterator[Int] = {
+    def subtractFunc(wholeIter: Iterator[Int],
+                     partIter: Iterator[Int]): Iterator[Int] = {
       val partSet = new mutable.HashSet[Int]()
       partSet ++= partIter
       wholeIter.filterNot(partSet.contains(_))
@@ -99,7 +102,8 @@ object Ex5_Partitions {
     // mapPartitions to achieve in-place grouping
     // TODO: fix this example ot make it a bit more natural
 
-    val pairs = sc.parallelize(for (x <- 1 to 6; y <- 1 to x) yield ("S" + x, y), 4)
+    val pairs =
+      sc.parallelize(for (x <- 1 to 6; y <- 1 to x) yield ("S" + x, y), 4)
     analyze(pairs)
 
     val rollup = pairs.foldByKey(0, 4)(_ + _)

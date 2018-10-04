@@ -2,8 +2,8 @@ package sql
 
 import java.sql.Date
 
-import org.apache.spark.sql.{ SQLContext, SparkSession }
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.sql.{SQLContext, SparkSession}
+import org.apache.spark.{SparkConf, SparkContext}
 
 //
 // Explore SPark SQL's ability to deal with complex types by creating the
@@ -11,8 +11,11 @@ import org.apache.spark.{ SparkConf, SparkContext }
 //
 object ComplexTypes {
 
-  case class Cust(id: Integer, name: String, trans: Seq[Transaction],
-    billing: Address, shipping: Address)
+  case class Cust(id: Integer,
+                  name: String,
+                  trans: Seq[Transaction],
+                  billing: Address,
+                  shipping: Address)
 
   case class Transaction(id: Integer, date: Date, amount: Double)
 
@@ -20,7 +23,8 @@ object ComplexTypes {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-ComplexTypes")
         .master("local[4]")
         .getOrCreate()
@@ -30,17 +34,23 @@ object ComplexTypes {
     // create a sequence of case class objects
     // (we defined the case class above)
     val custs = Seq(
-      Cust(1, "Widget Co",
-        Seq(Transaction(1, Date.valueOf("2012-01-01"), 100.0)),
-        Address("AZ"), Address("CA")),
-      Cust(2, "Acme Widgets",
-        Seq(
-          Transaction(2, Date.valueOf("2014-06-15"), 200.0),
-          Transaction(3, Date.valueOf("2014-07-01"), 50.0)),
-        Address("CA"), null),
-      Cust(3, "Widgetry",
-        Seq(Transaction(4, Date.valueOf("2014-01-01"), 150.0)),
-        Address("CA"), Address("CA")))
+      Cust(1,
+           "Widget Co",
+           Seq(Transaction(1, Date.valueOf("2012-01-01"), 100.0)),
+           Address("AZ"),
+           Address("CA")),
+      Cust(2,
+           "Acme Widgets",
+           Seq(Transaction(2, Date.valueOf("2014-06-15"), 200.0),
+               Transaction(3, Date.valueOf("2014-07-01"), 50.0)),
+           Address("CA"),
+           null),
+      Cust(3,
+           "Widgetry",
+           Seq(Transaction(4, Date.valueOf("2014-01-01"), 150.0)),
+           Address("CA"),
+           Address("CA"))
+    )
     // make it an RDD and convert to a DataFrame
     val customerDF = spark.sparkContext.parallelize(custs, 4).toDF()
 
@@ -59,10 +69,10 @@ object ComplexTypes {
     // handles these cases quite gracefully
     //
 
-    println("*** Projecting from deep structure doesn't blow up when it's missing")
+    println(
+      "*** Projecting from deep structure doesn't blow up when it's missing")
     val projectedCust =
-      spark.sql(
-        """
+      spark.sql("""
          | SELECT id, name, shipping.state, trans[1].date AS secondTrans
          | FROM customer
         """.stripMargin)
@@ -74,7 +84,8 @@ object ComplexTypes {
     // dates out of each one by referencing trans.date
     //
 
-    println("*** Reach into each element of an array of structures by omitting the subscript")
+    println(
+      "*** Reach into each element of an array of structures by omitting the subscript")
     val arrayOfStruct =
       spark.sql("SELECT id, trans.date AS transDates FROM customer")
     arrayOfStruct.show()
@@ -82,8 +93,7 @@ object ComplexTypes {
 
     println("*** Group by a nested field")
     val groupByNested =
-      spark.sql(
-        """SELECT shipping.state, count(*) AS customers
+      spark.sql("""SELECT shipping.state, count(*) AS customers
          | FROM customer
          | GROUP BY shipping.state
         """.stripMargin)
@@ -91,8 +101,7 @@ object ComplexTypes {
 
     println("*** Order by a nested field")
     val orderByNested =
-      spark.sql(
-        """
+      spark.sql("""
          | SELECT id, shipping.state
          | FROM customer
          | ORDER BY shipping.state

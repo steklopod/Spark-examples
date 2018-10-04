@@ -1,12 +1,12 @@
 package special
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ Partitioner, SparkContext, SparkConf }
+import org.apache.spark.{Partitioner, SparkContext, SparkConf}
 
 // This gives is access to the PairRDDFunctions
 import org.apache.spark.SparkContext._
 
-import scala.collection.{ mutable, Iterator }
+import scala.collection.{mutable, Iterator}
 
 // Partition a pair RDD with an integer key with the given
 // partition count
@@ -16,7 +16,7 @@ class KeyPartitioner(np: Int) extends Partitioner {
   def getPartition(key: Any): Int = {
     key match {
       case k: Int => k % numPartitions
-      case _ => throw new ClassCastException
+      case _      => throw new ClassCastException
     }
   }
 }
@@ -30,17 +30,28 @@ object PairRDD {
     // we need to loop sequentially so we can see them in order: use collect()
     partitions.zipWithIndex().collect().foreach {
       case (a, i) => {
-        println("Partition " + i + " contents (count " + a.count(_ => true) + "):" +
-          a.foldLeft("")((e, s) => e + " " + s))
+        println(
+          "Partition " + i + " contents (count " + a.count(_ => true) + "):" +
+            a.foldLeft("")((e, s) => e + " " + s))
       }
     }
   }
 
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("Streaming").setMaster("local[4]")
-    val sc = new SparkContext(conf)
+    val sc   = new SparkContext(conf)
 
-    val pairs = Seq((1, 9), (1, 2), (1, 1), (2, 3), (2, 4), (3, 1), (3, 5), (6, 2), (6, 1), (6, 4), (8, 1))
+    val pairs = Seq((1, 9),
+                    (1, 2),
+                    (1, 1),
+                    (2, 3),
+                    (2, 4),
+                    (3, 1),
+                    (3, 5),
+                    (6, 2),
+                    (6, 1),
+                    (6, 4),
+                    (8, 1))
 
     // a randomly partitioned pair RDD
     val pairsRDD = sc.parallelize(pairs, 4)
@@ -78,7 +89,8 @@ object PairRDD {
     // results can be combined -- essentially this relaxes
     // the strict condition imposed on "reduceByKey" that the supplied
     // function must be associative
-    val reducedRDD2 = pairsRDD.aggregateByKey(Int.MaxValue)(Math.min(_, _), Math.min(_, _))
+    val reducedRDD2 =
+      pairsRDD.aggregateByKey(Int.MaxValue)(Math.min(_, _), Math.min(_, _))
     analyze(reducedRDD2)
 
     // TODO: come up with an interesting example of aggregateByKey that

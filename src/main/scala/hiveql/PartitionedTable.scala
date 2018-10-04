@@ -35,7 +35,8 @@ object PartitionedTable {
     val tableRoot = exampleRoot + "/Table"
 
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("HiveQL-PartitionedTable")
         .master("local[4]")
         .enableHiveSupport()
@@ -46,9 +47,9 @@ object PartitionedTable {
     // create some sample data
     val ids = 1 to 1200
     val facts = ids.map(id => {
-      val month = id % 12 + 1
-      val year = 2000 + (month % 12)
-      val cat = id % 4
+      val month = id            % 12 + 1
+      val year  = 2000 + (month % 12)
+      val cat   = id            % 4
       Fact(year, month, id, cat)
     })
 
@@ -63,8 +64,7 @@ object PartitionedTable {
     //
     factsDF.createOrReplaceTempView("original")
 
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | DROP TABLE IF EXISTS partitioned
       """.stripMargin)
 
@@ -77,8 +77,7 @@ object PartitionedTable {
     // PARTITION BY clause and omitted from the core column definition -- contrast
     // this with the analogous statement in sql/PartitionedTable.scala.
     //
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | CREATE EXTERNAL TABLE partitioned
          |    (id INTEGER, cat INTEGER)
          | PARTITIONED BY (year INTEGER, month INTEGER)
@@ -96,22 +95,21 @@ object PartitionedTable {
 
     spark.sql("SET hive.exec.dynamic.partition.mode=nonstrict")
 
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | INSERT INTO TABLE partitioned
          | SELECT id, cat, year, month FROM original
       """.stripMargin)
 
     // print the resulting directory hierarchy with the Parquet files
 
-    println("*** partitioned table in the file system, after the initial insert")
+    println(
+      "*** partitioned table in the file system, after the initial insert")
     utils.PartitionedTableHierarchy.printRecursively(new File(tableRoot))
 
     // now we can query the partitioned table
 
     println("*** query summary of partitioned table")
-    val fromPartitioned = spark.sql(
-      s"""
+    val fromPartitioned = spark.sql(s"""
          | SELECT year, COUNT(*) as count
          | FROM partitioned
          | GROUP BY year
@@ -122,8 +120,7 @@ object PartitionedTable {
 
     // dynamic partition insert -- no PARTITION clause
 
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | INSERT INTO TABLE partitioned
          | VALUES
          |    (1400, 1, 2016, 1),
@@ -132,8 +129,7 @@ object PartitionedTable {
 
     // dynamic partition insert -- equivalent form with PARTITION clause
 
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | INSERT INTO TABLE partitioned
          | PARTITION (year, month)
          | VALUES
@@ -144,8 +140,7 @@ object PartitionedTable {
     // static partition insert -- fully specify the partition using the
     // PARTITION clause
 
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | INSERT INTO TABLE partitioned
          | PARTITION (year = 2017, month = 7)
          | VALUES
@@ -156,8 +151,7 @@ object PartitionedTable {
     // now for the mixed case -- in the PARTITION clause, 'year' is specified
     // statically and 'month' is dynamic
 
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | INSERT INTO TABLE partitioned
          | PARTITION (year = 2017, month)
          | VALUES
@@ -169,8 +163,7 @@ object PartitionedTable {
 
     println("*** the additional rows that were inserted")
 
-    val afterInserts = spark.sql(
-      s"""
+    val afterInserts = spark.sql(s"""
          | SELECT year, month, id, cat
          | FROM partitioned
          | WHERE year > 2011
@@ -179,13 +172,13 @@ object PartitionedTable {
 
     afterInserts.show()
 
-    println("*** partitioned table in the file system, after all additional inserts")
+    println(
+      "*** partitioned table in the file system, after all additional inserts")
     utils.PartitionedTableHierarchy.printRecursively(new File(tableRoot))
 
     println("*** query summary of partitioned table, after additional inserts")
 
-    val finalCheck = spark.sql(
-      s"""
+    val finalCheck = spark.sql(s"""
          | SELECT year, COUNT(*) as count
          | FROM partitioned
          | GROUP BY year

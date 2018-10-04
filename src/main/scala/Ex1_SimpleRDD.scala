@@ -1,12 +1,12 @@
-import org.apache.spark.{ SparkContext, SparkConf }
+import org.apache.spark.{SparkContext, SparkConf}
 
 object Ex1_SimpleRDD {
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("Ex1_SimpleRDD").setMaster("local[4]")
-    val sc = new SparkContext(conf)
+    val sc   = new SparkContext(conf)
 
     // put some data in an RDD
-    val numbers = 1 to 10
+    val numbers    = 1 to 10
     val numbersRDD = sc.parallelize(numbers, 4)
     println("Print each element of the original RDD")
     numbersRDD.foreach(println)
@@ -25,8 +25,9 @@ object Ex1_SimpleRDD {
     println("We _should_ have 4 partitions")
     println(partitions.count())
     partitions.foreach(a => {
-      println("Partition contents:" +
-        a.foldLeft("")((s, e) => s + " " + e))
+      println(
+        "Partition contents:" +
+          a.foldLeft("")((s, e) => s + " " + e))
     })
   }
 }

@@ -38,8 +38,12 @@ import org.apache.spark.sql.SparkSession
 //
 object PartitionBy {
 
-  case class Transaction(id: Long, year: Int, month: Int, day: Int,
-    quantity: Long, price: Double)
+  case class Transaction(id: Long,
+                         year: Int,
+                         month: Int,
+                         day: Int,
+                         quantity: Long,
+                         price: Double)
 
   def main(args: Array[String]) {
 
@@ -47,7 +51,8 @@ object PartitionBy {
     val exampleRoot = "/tmp/LearningSpark"
 
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("Dataset-PartitionBy")
         .master("local[4]")
         // set the parallelism to emphasize the impact of partitioning
@@ -91,7 +96,8 @@ object PartitionBy {
       Transaction(1021, 2017, 2, 22, 100, 42.99),
       Transaction(1022, 2017, 2, 22, 75, 11.99),
       Transaction(1023, 2017, 2, 22, 50, 42.99),
-      Transaction(1024, 2017, 2, 22, 200, 99.95))
+      Transaction(1024, 2017, 2, 22, 200, 99.95)
+    )
     val transactionsDS = transactions.toDS()
 
     // the number of partitions comes from the default parallelism
@@ -110,8 +116,10 @@ object PartitionBy {
       .option("header", "true")
       .csv(simpleRoot)
 
-    println("*** Simple output file count: " +
-      utils.PartitionedTableHierarchy.countRecursively(new File(simpleRoot), ".csv"))
+    println(
+      "*** Simple output file count: " +
+        utils.PartitionedTableHierarchy.countRecursively(new File(simpleRoot),
+                                                         ".csv"))
 
     utils.PartitionedTableHierarchy.printRecursively(new File(simpleRoot))
 
@@ -132,8 +140,10 @@ object PartitionBy {
       .option("header", "true")
       .csv(partitionedRoot)
 
-    println("*** Date partitioned output file count: " +
-      utils.PartitionedTableHierarchy.countRecursively(new File(partitionedRoot), ".csv"))
+    println(
+      "*** Date partitioned output file count: " +
+        utils.PartitionedTableHierarchy
+          .countRecursively(new File(partitionedRoot), ".csv"))
 
     utils.PartitionedTableHierarchy.printRecursively(new File(partitionedRoot))
 
@@ -148,15 +158,20 @@ object PartitionBy {
 
     val repartitionedRoot = exampleRoot + "/Repartitioned"
 
-    transactionsDS.repartition($"year", $"month").write
+    transactionsDS
+      .repartition($"year", $"month")
+      .write
       .partitionBy("year", "month")
       .option("header", "true")
       .csv(repartitionedRoot)
 
-    println("*** Date repartitioned output file count: " +
-      utils.PartitionedTableHierarchy.countRecursively(new File(repartitionedRoot), ".csv"))
+    println(
+      "*** Date repartitioned output file count: " +
+        utils.PartitionedTableHierarchy
+          .countRecursively(new File(repartitionedRoot), ".csv"))
 
-    utils.PartitionedTableHierarchy.printRecursively(new File(repartitionedRoot))
+    utils.PartitionedTableHierarchy.printRecursively(
+      new File(repartitionedRoot))
 
     //
     // Now we'll read the data back from the hierarchy of CSV files. Notice
@@ -166,8 +181,7 @@ object PartitionBy {
     // appear in the individual CSV files.
     //
 
-    val allDF = spark
-      .read
+    val allDF = spark.read
       .option("basePath", partitionedRoot)
       .option("header", "true")
       .csv(partitionedRoot)
@@ -181,8 +195,7 @@ object PartitionBy {
     // read its CSV file(s): no years or months!
     //
 
-    val oneDF = spark
-      .read
+    val oneDF = spark.read
       .option("basePath", partitionedRoot + "/year=2016/month=11")
       .option("header", "true")
       .csv(partitionedRoot + "/year=2016/month=11")
@@ -195,8 +208,7 @@ object PartitionBy {
     // are back.
     //
 
-    val oneMonth = spark
-      .read
+    val oneMonth = spark.read
       .option("basePath", partitionedRoot)
       .option("header", "true")
       .csv(partitionedRoot + "/year=2016/month=11")
@@ -209,8 +221,7 @@ object PartitionBy {
     // that only the relevant files will be read.
     //
 
-    val twoMonthQuery = spark
-      .read
+    val twoMonthQuery = spark.read
       .option("basePath", partitionedRoot)
       .option("header", "true")
       .csv(partitionedRoot)

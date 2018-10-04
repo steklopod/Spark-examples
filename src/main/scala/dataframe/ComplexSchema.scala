@@ -1,6 +1,6 @@
 package dataframe
 
-import org.apache.spark.sql.{ Row, SparkSession }
+import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 
@@ -12,7 +12,8 @@ import org.apache.spark.sql.functions._
 object ComplexSchema {
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("DataFrame-ComplexSchema")
         .master("local[4]")
         .getOrCreate()
@@ -23,23 +24,23 @@ object ComplexSchema {
     // Example 1: nested StructType for nested rows
     //
 
-    val rows1 = Seq(
-      Row(1, Row("a_book_examples", "b"), 8.00, Row(1, 2)),
-      Row(2, Row("c", "d"), 9.00, Row(3, 4)))
+    val rows1 = Seq(Row(1, Row("a_book_examples", "b"), 8.00, Row(1, 2)),
+                    Row(2, Row("c", "d"), 9.00, Row(3, 4)))
     val rows1Rdd = spark.sparkContext.parallelize(rows1, 4)
 
     val schema1 = StructType(
       Seq(
         StructField("id", IntegerType, true),
-        StructField("s1", StructType(
-          Seq(
-            StructField("x", StringType, true),
-            StructField("y", StringType, true))), true),
+        StructField("s1",
+                    StructType(Seq(StructField("x", StringType, true),
+                                   StructField("y", StringType, true))),
+                    true),
         StructField("d", DoubleType, true),
-        StructField("s2", StructType(
-          Seq(
-            StructField("u", IntegerType, true),
-            StructField("v", IntegerType, true))), true)))
+        StructField("s2",
+                    StructType(Seq(StructField("u", IntegerType, true),
+                                   StructField("v", IntegerType, true))),
+                    true)
+      ))
 
     println("Position of subfield 'd' is " + schema1.fieldIndex("d"))
 
@@ -64,9 +65,8 @@ object ComplexSchema {
     // Example 2: ArrayType
     //
 
-    val rows2 = Seq(
-      Row(1, Row("a_book_examples", "b"), 8.00, Array(1, 2)),
-      Row(2, Row("c", "d"), 9.00, Array(3, 4, 5)))
+    val rows2 = Seq(Row(1, Row("a_book_examples", "b"), 8.00, Array(1, 2)),
+                    Row(2, Row("c", "d"), 9.00, Array(3, 4, 5)))
     val rows2Rdd = spark.sparkContext.parallelize(rows2, 4)
 
     //
@@ -75,12 +75,11 @@ object ComplexSchema {
     // the fields 'd' and 'a'
     //
     val schema2 = StructType(
-      Seq(
-        StructField("id", IntegerType, true),
-        StructField("s1", StructType(
-          Seq(
-            StructField("x", StringType, true),
-            StructField("y", StringType, true))), true)))
+      Seq(StructField("id", IntegerType, true),
+          StructField("s1",
+                      StructType(Seq(StructField("x", StringType, true),
+                                     StructField("y", StringType, true))),
+                      true)))
       .add(StructField("d", DoubleType, true))
       .add("a_book_examples", ArrayType(IntegerType))
 
@@ -112,16 +111,14 @@ object ComplexSchema {
     // Example 3: MapType
     //
 
-    val rows3 = Seq(
-      Row(1, 8.00, Map("u" -> 1, "v" -> 2)),
-      Row(2, 9.00, Map("x" -> 3, "y" -> 4, "z" -> 5)))
+    val rows3 = Seq(Row(1, 8.00, Map("u" -> 1, "v" -> 2)),
+                    Row(2, 9.00, Map("x" -> 3, "y" -> 4, "z" -> 5)))
     val rows3Rdd = spark.sparkContext.parallelize(rows3, 4)
 
     val schema3 = StructType(
-      Seq(
-        StructField("id", IntegerType, true),
-        StructField("d", DoubleType, true),
-        StructField("m", MapType(StringType, IntegerType))))
+      Seq(StructField("id", IntegerType, true),
+          StructField("d", DoubleType, true),
+          StructField("m", MapType(StringType, IntegerType))))
 
     val df3 = spark.createDataFrame(rows3Rdd, schema3)
 

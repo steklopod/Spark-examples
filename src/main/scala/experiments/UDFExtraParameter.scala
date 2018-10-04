@@ -4,21 +4,23 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
 object UDFExtraParameter {
-  private case class Cust(id: Integer, name: String, sales: Double, discount: Double, state: String)
+  private case class Cust(id: Integer,
+                          name: String,
+                          sales: Double,
+                          discount: Double,
+                          state: String)
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("DataFrame-UDFExtraParameter")
         .master("local[4]")
         .getOrCreate()
 
     import spark.implicits._
 
-    val pairs = Seq(
-      (1, "One"),
-      (2, "Two"),
-      (3, "Three"))
+    val pairs = Seq((1, "One"), (2, "Two"), (3, "Three"))
     // make it an RDD and convert to a DataFrame
     val theMap = spark.sparkContext.parallelize(pairs, 4).collectAsMap()
 

@@ -1,9 +1,9 @@
 package sql
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{ DataFrame, Row, SparkSession }
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spark.sql.types._
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.{SparkConf, SparkContext}
 
 //
 // NOTE: This is example is now, strictly speaking, out of date, as the
@@ -30,11 +30,12 @@ object OutputJSON {
       case (sf, a) =>
         sf.dataType match {
           // leaving out some of the atomic types
-          case StringType => "\"" + sf.name + "\":\"" + a + "\""
+          case StringType  => "\"" + sf.name + "\":\"" + a + "\""
           case IntegerType => "\"" + sf.name + "\":" + a
-          case LongType => "\"" + sf.name + "\":" + a
+          case LongType    => "\"" + sf.name + "\":" + a
           // This next line deals with nested JSON structures (not needed if flat)
-          case StructType(s) => "\"" + sf.name + "\":" + formatStruct(s, a.asInstanceOf[Row])
+          case StructType(s) =>
+            "\"" + sf.name + "\":" + formatStruct(s, a.asInstanceOf[Row])
         }
     }
   }
@@ -42,7 +43,8 @@ object OutputJSON {
   // Format a single struct by iterating through the schema and the Row
   def formatStruct(schema: Seq[StructField], r: Row): String = {
     val paired = schema.zip(r.toSeq)
-    "{" + paired.foldLeft("")((s, p) => (if (s == "") "" else (s + ", ")) + formatItem(p)) + "}"
+    "{" + paired.foldLeft("")((s, p) =>
+      (if (s == "") "" else (s + ", ")) + formatItem(p)) + "}"
 
   }
 
@@ -54,17 +56,18 @@ object OutputJSON {
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-OutputJSON")
         .master("local[4]")
         .getOrCreate()
 
     // easy enough to query flat JSON
-    val people = spark.read.json("src/main/resources/data/flat.json")
+    val people  = spark.read.json("src/main/resources/data/flat.json")
     val strings = formatDataFrame(people.schema, people)
     strings.foreach(println)
 
-    val peopleAddr = spark.read.json("src/main/resources/data/notFlat.json")
+    val peopleAddr    = spark.read.json("src/main/resources/data/notFlat.json")
     val nestedStrings = formatDataFrame(peopleAddr.schema, peopleAddr)
     nestedStrings.foreach(println)
   }

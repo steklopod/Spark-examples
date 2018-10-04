@@ -1,6 +1,6 @@
 package dataframe
 
-import org.apache.spark.sql.{ DataFrame, Dataset, SparkSession }
+import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 
 //
 // Explore interoperability between DataFrame and Dataset. Note that Dataset
@@ -8,13 +8,18 @@ import org.apache.spark.sql.{ DataFrame, Dataset, SparkSession }
 //
 object DatasetConversion {
 
-  case class Cust(id: Integer, name: String, sales: Double, discount: Double, state: String)
+  case class Cust(id: Integer,
+                  name: String,
+                  sales: Double,
+                  discount: Double,
+                  state: String)
 
   case class StateSales(state: String, sales: Double)
 
   def main(args: Array[String]) {
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("DataFrame-DatasetConversion")
         .master("local[4]")
         .getOrCreate()
@@ -28,7 +33,8 @@ object DatasetConversion {
       Cust(2, "Acme Widgets", 410500.00, 500.00, "CA"),
       Cust(3, "Widgetry", 410500.00, 200.00, "CA"),
       Cust(4, "Widgets R Us", 410500.00, 0.0, "CA"),
-      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA"))
+      Cust(5, "Ye Olde Widgete", 500.00, 0.0, "MA")
+    )
 
     // Create the DataFrame without passing through an RDD
     val customerDF: DataFrame = spark.createDataFrame(custs)

@@ -18,13 +18,13 @@ object PartitionedTableColumnOrder {
     val tableRoot = exampleRoot + "/Table"
 
     val spark =
-      SparkSession.builder()
+      SparkSession
+        .builder()
         .appName("SQL-PartitionedTableColumnOrder")
         .master("local[4]")
         .getOrCreate()
 
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | DROP TABLE IF EXISTS partitioned
       """.stripMargin)
 
@@ -35,8 +35,7 @@ object PartitionedTableColumnOrder {
     // specify the partition columns twice, and doesn't require you to make them
     // the last columns.
     //
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | CREATE TABLE partitioned
          |    (year INTEGER, month INTEGER, id INTEGER, cat INTEGER)
          | USING PARQUET
@@ -46,8 +45,7 @@ object PartitionedTableColumnOrder {
 
     // dynamic partition insert -- no PARTITION clause
 
-    spark.sql(
-      s"""
+    spark.sql(s"""
          | INSERT INTO partitioned PARTITION (year, month)
          | VALUES
          |    (1400, 1, 2016, 1),
@@ -56,8 +54,7 @@ object PartitionedTableColumnOrder {
 
     println("*** the rows that were inserted")
 
-    val afterInserts = spark.sql(
-      s"""
+    val afterInserts = spark.sql(s"""
          | SELECT year, month, id, cat
          | FROM partitioned
          | ORDER BY year, month
