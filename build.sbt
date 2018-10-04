@@ -20,12 +20,9 @@ libraryDependencies ++= Seq(
   "org.junit.platform" % "junit-platform-launcher" % junitPlatform % Test,
   "org.junit.platform" % "junit-platform-engine" % junitPlatform % Test,
   "org.junit.platform" % "junit-platform-runner" % junitPlatform % Test,
-
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
-  "org.scalariform" %% "scalariform" % "0.2.6",
   "mysql" % "mysql-connector-java" % "5.1.6",
-
   "org.apache.spark" %% "spark-core" % sparkVersion,
   "org.apache.spark" %% "spark-streaming" % sparkVersion,
   "org.apache.spark" %% "spark-sql" % sparkVersion,
@@ -42,6 +39,3 @@ resolvers ++= Seq(
   Classpaths.typesafeReleases,
   DefaultMavenRepository
 )
-
-scalariformAutoformat := true
-scalariformWithBaseDirectory := true

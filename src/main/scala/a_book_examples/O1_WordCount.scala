@@ -2,13 +2,14 @@ package a_book_examples
 
 import org.apache.hadoop.mapred.InvalidInputException
 import org.apache.spark._
+
 import scala.collection.immutable.ListMap
 
 object O1_WordCount {
   def main(args: Array[String]) {
     val master = args.length match {
       case x: Int if x > 0 => args(0)
-      case _ => "local"
+      case _               => "local"
     }
     // Инициализация контекста
     val sc = new SparkContext(master, "WordCount", System.getenv("SPARK_HOME"))
@@ -23,7 +24,7 @@ object O1_WordCount {
     //читаем файл, переданный во втором аргументе
     val input = args.length match {
       case x: Int if x > 1 => sc.textFile(args(1))
-      case _ => defaultTextFile
+      case _               => defaultTextFile
     }
     //парсим все слова, разбив строки по пробелу
     val words = input.flatMap(line => line.split(" "))
@@ -39,7 +40,8 @@ object O1_WordCount {
       }
       //печатаем ТОП-5 пар по убыванию {слово -> n}, где n - кол-во вхождений слова
       case _ => {
-        val wc = ListMap(words.countByValue().toSeq.sortWith(_._2 > _._2): _*).take(5)
+        val wc =
+      ListMap(words.countByValue().toSeq.sortWith(_._2 > _._2): _*).take(5)
         println(wc.mkString(",\n"))
       }
     }

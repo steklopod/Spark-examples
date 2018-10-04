@@ -1,10 +1,9 @@
 /**
- * Illustrates a simple streaming application
- */
+  * Illustrates a simple streaming application
+  */
 package oreilly
 
 import org.apache.spark._
-import org.apache.spark.SparkContext._
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.dstream._
 

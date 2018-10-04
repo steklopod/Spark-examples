@@ -1,12 +1,10 @@
 /**
- * Illustrates a basic Kafka stream
- */
+  * Illustrates a basic Kafka stream
+  */
 package oreilly
 
 import org.apache.spark._
-import org.apache.spark.SparkContext._
 import org.apache.spark.streaming._
-import org.apache.spark.streaming.kafka._
 
 object KafkaInput {
   def main(args: Array[String]) {

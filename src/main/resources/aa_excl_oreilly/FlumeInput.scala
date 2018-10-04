@@ -1,12 +1,10 @@
 /**
- * Illustrates a basic Flume stream
- */
+  * Illustrates a basic Flume stream
+  */
 package oreilly
 
 import org.apache.spark._
-import org.apache.spark.SparkContext._
 import org.apache.spark.streaming._
-import org.apache.spark.streaming.flume._
 
 object FlumeInput {
   def main(args: Array[String]) {
@@ -18,7 +16,8 @@ object FlumeInput {
     println(s"Creating flume stream on $receiverHostname $receiverPort")
     val events = FlumeUtils.createStream(ssc, receiverHostname, receiverPort)
     // Assuming that our flume events are UTF-8 log lines
-    val lines = events.map{e => new String(e.event.getBody().array(), "UTF-8")}
+    val lines = events.map { e => new String(e.event.getBody().array(), "UTF-8")
+    }
     println("Starting StreamingContext")
     lines.print()
     // start our streaming context and wait for it to "finish"

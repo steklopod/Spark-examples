@@ -1,11 +1,10 @@
 /**
- * Illustrates loading Hive data using Spark SQL
- */
+  * Illustrates loading Hive data using Spark SQL
+  */
 package oreilly
 
 import org.apache.spark._
 import org.apache.spark.sql.hive.HiveContext
-
 
 object LoadHive {
   def main(args: Array[String]) {
@@ -20,5 +19,5 @@ object LoadHive {
     val input = hiveCtx.sql("FROM src SELECT key, value")
     val data = input.map(_.getInt(0))
     println(data.collect().toList)
-    }
+  }
 }

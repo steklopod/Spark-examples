@@ -1,11 +1,12 @@
 /**
- * Illustrates loading data over JDBC
- */
+  * Illustrates loading data over JDBC
+  */
 package oreilly
+
+import java.sql.{DriverManager, ResultSet}
 
 import org.apache.spark._
 import org.apache.spark.rdd.JdbcRDD
-import java.sql.{DriverManager, ResultSet}
 
 object LoadSimpleJdbc {
   def main(args: Array[String]) {
@@ -14,10 +15,17 @@ object LoadSimpleJdbc {
       System.exit(1)
     }
     val master = args(0)
-    val sc = new SparkContext(master, "LoadSimpleJdbc", System.getenv("SPARK_HOME"))
-    val data = new JdbcRDD(sc,
-      createConnection, "SELECT * FROM panda WHERE ? <= id AND ID <= ?",
-      lowerBound = 1, upperBound = 3, numPartitions = 2, mapRow = extractValues)
+    val sc =
+      new SparkContext(master, "LoadSimpleJdbc", System.getenv("SPARK_HOME"))
+    val data = new JdbcRDD(
+      sc,
+      createConnection,
+      "SELECT * FROM panda WHERE ? <= id AND ID <= ?",
+      lowerBound = 1,
+      upperBound = 3,
+      numPartitions = 2,
+      mapRow = extractValues
+    )
     println(data.collect().toList)
   }
 

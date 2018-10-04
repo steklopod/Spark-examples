@@ -1,14 +1,13 @@
 /**
- * Illustrates writing data over JDBC
- */
+  * Illustrates writing data over JDBC
+  */
 package oreilly
 
-import org.apache.spark._
-import org.apache.spark.SparkContext._
-import org.apache.spark.rdd.JdbcRDD
-import java.sql.{PreparedStatement, DriverManager, ResultSet}
-import org.apache.hadoop.mapred.lib.db._
+import java.sql.{PreparedStatement, ResultSet}
+
 import org.apache.hadoop.mapred.JobConf
+import org.apache.hadoop.mapred.lib.db._
+import org.apache.spark._
 
 object WriteSimpleDB {
   def main(args: Array[String]) {
@@ -17,10 +16,11 @@ object WriteSimpleDB {
       System.exit(1)
     }
     val master = args(0)
-    val sc = new SparkContext(master, "WriteSimpleJdbc", System.getenv("SPARK_HOME"))
+    val sc =
+      new SparkContext(master, "WriteSimpleJdbc", System.getenv("SPARK_HOME"))
     val data = sc.parallelize(List(("cat1", 1)))
     // foreach partition method
-    data.foreachPartition{records =>
+    data.foreachPartition { records =>
       records.foreach(record => println("fake db write"))
     }
     // DBOutputFormat approach
@@ -28,8 +28,12 @@ object WriteSimpleDB {
     val tableName = "table"
     val fields = Array("name", "age")
     val jobConf = new JobConf()
-    DBConfiguration.configureDB(jobConf, "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/test?user=holden")
-    DBOutputFormat.setOutput(jobConf, tableName, fields:_*)
+    DBConfiguration.configureDB(
+      jobConf,
+      "com.mysql.jdbc.Driver",
+      "jdbc:mysql://localhost/test?user=holden"
+    )
+    DBOutputFormat.setOutput(jobConf, tableName, fields: _*)
     records.saveAsHadoopDataset(jobConf)
   }
   case class catRecord(name: String, age: Int) extends DBWritable {

@@ -1,9 +1,13 @@
 logLevel := Level.Warn
 
-//https://github.com/sbt/sbt-scalariform
-addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.2") 
+//Форматирование кода: https://scalameta.org/scalafmt/docs/installation.html
+addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.5.1")
+//sbt-команды
+//scalafmt: все файлы
+//scalafmtSbt: все *.sbt-файлы
+//scalafmtOnly: только один файл
 
-resolvers ++= Seq( 
-  Resolver.sonatypeRepo("snapshots"), 
-  Resolver.sbtPluginRepo("snapshots") 
-  )
+resolvers ++= Seq(
+  Resolver.sonatypeRepo("snapshots"),
+  Resolver.sbtPluginRepo("snapshots")
+)

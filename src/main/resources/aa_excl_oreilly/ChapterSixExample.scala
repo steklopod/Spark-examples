@@ -1,21 +1,17 @@
 /**
- * Contains the Chapter 6 Example illustrating accumulators, broadcast variables, numeric operations, and pipe.
- */
+  * Contains the Chapter 6 Example illustrating accumulators, broadcast variables, numeric operations, and pipe.
+  */
 package oreilly
 
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.DeserializationFeature
-
 import org.apache.spark._
-import org.apache.spark.SparkContext._
 
-import org.eclipse.jetty.client.ContentExchange
-import org.eclipse.jetty.client.HttpClient
-
-case class CallLog(callsign: String="", contactlat: Double,
-  contactlong: Double, mylat: Double, mylong: Double)
+case class CallLog(callsign: String = "",
+                   contactlat: Double,
+                   contactlong: Double,
+                   mylat: Double,
+                   mylong: Double)
 
 object ChapterSixExample {
   def main(args: Array[String]) {
@@ -23,11 +19,15 @@ object ChapterSixExample {
     val inputFile = args(1)
     val inputFile2 = args(2)
     val outputDir = args(3)
-    val sc = new SparkContext(master, "AdvancedSparkProgramming", System.getenv("SPARK_HOME"))
+    val sc = new SparkContext(
+      master,
+      "AdvancedSparkProgramming",
+      System.getenv("SPARK_HOME")
+    )
     val file = sc.textFile(inputFile)
     val count = sc.accumulator(0)
 
-    file.foreach(line => {             // side-effecting only
+    file.foreach(line => { // side-effecting only
       if (line.contains("KK6JKQ")) {
         count += 1
       }
@@ -45,57 +45,71 @@ object ChapterSixExample {
       if (line == "") {
         errorLines += 1
       } else {
-        dataLines +=1
+        dataLines += 1
       }
       line.split(" ")
     })
     // Validate a call sign
     val callSignRegex = "\\A\\d?[a-zA-Z]{1,2}\\d{1,4}[a-zA-Z]{1,3}\\Z".r
-    val validSigns = callSigns.filter{sign =>
+    val validSigns = callSigns.filter { sign =>
       if ((callSignRegex findFirstIn sign).nonEmpty) {
         validSignCount += 1; true
       } else {
         invalidSignCount += 1; false
       }
     }
-    val contactCounts = validSigns.map(callSign => (callSign, 1)).reduceByKey((x, y) => x + y)
+    val contactCounts =
+      validSigns.map(callSign => (callSign, 1)).reduceByKey((x, y) => x + y)
     // Force evaluation so the counters are populated
     contactCounts.count()
     if (invalidSignCount.value < 0.5 * validSignCount.value) {
       contactCounts.saveAsTextFile(outputDir + "/output.txt")
     } else {
-      println(s"Too many errors ${invalidSignCount.value} for ${validSignCount.value}")
+      println(
+        s"Too many errors ${invalidSignCount.value} for ${validSignCount.value}"
+      )
       System.exit(1)
     }
     // Lookup the countries for each call sign for the
     // contactCounts RDD.  We load an array of call sign
     // prefixes to country code to support this lookup.
     val signPrefixes = sc.broadcast(loadCallSignTable())
-    val countryContactCounts = contactCounts.map{case (sign, count) =>
-      val country = lookupInArray(sign, signPrefixes.value)
-      (country, count)
-    }.reduceByKey((x, y) => x + y)
+    val countryContactCounts = contactCounts
+      .map {
+        case (sign, count) =>
+          val country = lookupInArray(sign, signPrefixes.value)
+          (country, count)
+      }
+      .reduceByKey((x, y) => x + y)
     countryContactCounts.saveAsTextFile(outputDir + "/countries.txt")
     // Resolve call signs in a second file to location
-    val countryCounts2 = sc.textFile(inputFile2)
-      .flatMap(_.split("\\s+"))      // Split line into words
-      .map{case sign =>
-        val country = lookupInArray(sign, signPrefixes.value)
-        (country, 1)}.reduceByKey((x, y) => x + y).collect()
+    val countryCounts2 = sc
+      .textFile(inputFile2)
+      .flatMap(_.split("\\s+")) // Split line into words
+      .map {
+        case sign =>
+          val country = lookupInArray(sign, signPrefixes.value)
+          (country, 1)
+      }
+      .reduceByKey((x, y) => x + y)
+      .collect()
     // Look up the location info using a connection pool
-    val contactsContactLists = validSigns.distinct().mapPartitions{
-      signs =>
+    val contactsContactLists = validSigns.distinct().mapPartitions { signs =>
       val mapper = createMapper()
       // create a connection pool
       val client = new HttpClient()
       client.start()
       // create http request
-      signs.map {sign =>
-        createExchangeForSign(client, sign)
-      // fetch responses
-      }.map{ case (sign, exchange) =>
-          (sign, readExchangeCallLog(mapper, exchange))
-      }.filter(x => x._2 != null) // Remove empty CallLogs
+      signs
+        .map { sign =>
+          createExchangeForSign(client, sign)
+          // fetch responses
+        }
+        .map {
+          case (sign, exchange) =>
+            (sign, readExchangeCallLog(mapper, exchange))
+        }
+        .filter(x => x._2 != null) // Remove empty CallLogs
     }
     println(contactsContactLists.collect().toList)
     // Computer the distance of each call using an external R program
@@ -104,8 +118,10 @@ object ChapterSixExample {
     val distScript = pwd + "/src/R/finddistance.R"
     val distScriptName = "finddistance.R"
     sc.addFile(distScript)
-    val pipeInputs = contactsContactLists.values.flatMap(x => x.map(y =>
-      s"${y.contactlat},${y.contactlong},${y.mylat},${y.mylong}"))
+    val pipeInputs = contactsContactLists.values.flatMap(
+      x =>
+        x.map(y => s"${y.contactlat},${y.contactlong},${y.mylat},${y.mylong}")
+    )
     println(pipeInputs.collect().toList)
     val distances = pipeInputs.pipe(SparkFiles.get(distScriptName))
     // Now we can go ahead and remove outliers since those may have misreported locations
@@ -114,18 +130,21 @@ object ChapterSixExample {
     val stats = distanceDoubles.stats()
     val stddev = stats.stdev
     val mean = stats.mean
-    val reasonableDistances = distanceDoubles.filter(x => math.abs(x-mean) < 3 * stddev)
+    val reasonableDistances =
+      distanceDoubles.filter(x => math.abs(x - mean) < 3 * stddev)
     println(reasonableDistances.collect().toList)
   }
 
-  def createExchangeForSign(client: HttpClient, sign: String): (String, ContentExchange) = {
+  def createExchangeForSign(client: HttpClient,
+                            sign: String): (String, ContentExchange) = {
     val exchange = new ContentExchange()
     exchange.setURL(s"http://new73s.herokuapp.com/qsos/${sign}.json")
     client.send(exchange)
     (sign, exchange)
   }
 
-  def readExchangeCallLog(mapper: ObjectMapper, exchange: ContentExchange): Array[CallLog] = {
+  def readExchangeCallLog(mapper: ObjectMapper,
+                          exchange: ContentExchange): Array[CallLog] = {
     exchange.waitForDone()
     val responseJson = exchange.getResponseContent()
     val qsos = mapper.readValue(responseJson, classOf[Array[CallLog]])
@@ -133,17 +152,21 @@ object ChapterSixExample {
   }
 
   def lookupInArray(sign: String, prefixArray: Array[String]): String = {
-    val pos = java.util.Arrays.binarySearch(prefixArray.asInstanceOf[Array[AnyRef]], sign) match {
-      case x if x < 0 => -x-1
-      case x => x
+    val pos = java.util.Arrays
+      .binarySearch(prefixArray.asInstanceOf[Array[AnyRef]], sign) match {
+      case x if x < 0 => -x - 1
+      case x          => x
     }
     // The country is the second element separated by comma
     prefixArray(pos).split(",")(1)
   }
 
   def loadCallSignTable() = {
-    scala.io.Source.fromFile("./files/callsign_tbl_sorted").getLines()
-      .filter(_ != "").toArray
+    scala.io.Source
+      .fromFile("./files/callsign_tbl_sorted")
+      .getLines()
+      .filter(_ != "")
+      .toArray
   }
 
   def createMapper() = {

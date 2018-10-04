@@ -17,10 +17,10 @@
 
 package oreilly
 
-import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.mllib.classification.LogisticRegressionWithSGD
 import org.apache.spark.mllib.feature.HashingTF
 import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.{SparkConf, SparkContext}
 
 object MLlib {
 
@@ -40,10 +40,13 @@ object MLlib {
     val hamFeatures = ham.map(email => tf.transform(email.split(" ")))
 
     // Create LabeledPoint datasets for positive (spam) and negative (ham) examples.
-    val positiveExamples = spamFeatures.map(features => LabeledPoint(1, features))
-    val negativeExamples = hamFeatures.map(features => LabeledPoint(0, features))
+    val positiveExamples =
+      spamFeatures.map(features => LabeledPoint(1, features))
+    val negativeExamples =
+      hamFeatures.map(features => LabeledPoint(0, features))
     val trainingData = positiveExamples ++ negativeExamples
-    trainingData.cache() // Cache data since Logistic Regression is an iterative algorithm.
+    trainingData
+      .cache() // Cache data since Logistic Regression is an iterative algorithm.
 
     // Create a Logistic Regression learner which uses the LBFGS optimizer.
     val lrLearner = new LogisticRegressionWithSGD()
@@ -52,11 +55,17 @@ object MLlib {
 
     // Test on a positive example (spam) and a negative one (ham).
     // First apply the same HashingTF feature transformation used on the training data.
-    val posTestExample = tf.transform("O M G GET cheap stuff by sending money to ...".split(" "))
-    val negTestExample = tf.transform("Hi Dad, I started studying Spark the other ...".split(" "))
+    val posTestExample =
+      tf.transform("O M G GET cheap stuff by sending money to ...".split(" "))
+    val negTestExample =
+      tf.transform("Hi Dad, I started studying Spark the other ...".split(" "))
     // Now use the learned model to predict spam/ham for new emails.
-    println(s"Prediction for positive test example: ${model.predict(posTestExample)}")
-    println(s"Prediction for negative test example: ${model.predict(negTestExample)}")
+    println(
+      s"Prediction for positive test example: ${model.predict(posTestExample)}"
+    )
+    println(
+      s"Prediction for negative test example: ${model.predict(negTestExample)}"
+    )
 
     sc.stop()
   }
