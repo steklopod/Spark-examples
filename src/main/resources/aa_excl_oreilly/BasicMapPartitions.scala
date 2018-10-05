@@ -1,10 +1,6 @@
-/**
-  * Illustrates a simple map partition in Scala
-  */
-package oreilly
+package a_book_examples;
 
-import org.apache.spark._
-
+//добавить зависимости
 object BasicMapPartitions {
   def main(args: Array[String]) {
     val master = args.length match {

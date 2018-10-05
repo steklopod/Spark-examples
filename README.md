@@ -9,12 +9,12 @@
 
 Примеры можно найти в разделе `src/main/scala`. Лучший способ использовать их - начать с чтения кода и его комментариев. 
 Затем, поскольку каждый файл содержит определение объекта основным методом, запустите его и рассмотрите вывод. 
-Соответствующие сообщения в блогах и ответы `StackOverflow` перечислены в различных пакетах файлах `README.md`.
+Соответствующие сообщения в блогах и ответы `StackOverflow` перечислены в файлах `README.md` в различных пакетах.
 
 | Пакет или файл                   | Что иллюстрирует      |
 |----------------------------------|-----------------------|
-|        Ex1_SimpleRDD             | Как выполнить свой первый, очень простой, `Spark Job`. Смотрите также [An easy way to start learning Spark](http://www.river-of-bytes.com/2014/11/an-easy-way-to-start-learning-spark.html).
-|        Ex2_Computations          | Как RDD работают в более сложных вычислениях. Смотрите также [Spark computations](http://www.river-of-bytes.com/2014/11/spark-computations.html). |
+|        Ex1_SimpleRDD             | Как выполнить свой первый, очень простой, `Spark Job`. Смотрите также: [An easy way to start learning Spark](http://www.river-of-bytes.com/2014/11/an-easy-way-to-start-learning-spark.html).
+|        Ex2_Computations          | Как RDD работают в более сложных вычислениях. Смотрите также: [Spark computations](http://www.river-of-bytes.com/2014/11/spark-computations.html). |
 |        Ex3_CombiningRDDs         | Операции с несколькими RDD |
 |        Ex4_MoreOperationsOnRDDs  | Более сложные операции на отдельных RDD |
 |        Ex5_Partitions            | Явный контроль над разбиением на разделы для производительности и масштабируемости |
