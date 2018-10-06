@@ -1,7 +1,7 @@
-package a_book_examples
+package a_book_examples.basic
 import a_book_examples.StaticStorage.getSparkContext
 
-object O2_Sum extends App {
+object Sum extends App {
   val sc = getSparkContext(args, "BasicMap")
 
   val input  = sc.parallelize(List(1, 2, 3, 4))

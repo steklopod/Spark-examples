@@ -1,8 +1,8 @@
-package a_book_examples
+package a_book_examples.avg
 import a_book_examples.StaticStorage.getSparkContext
 
 //стр. 77
-object O3_5_PerKeyAvg extends App {
+object PerKeyAvg extends App {
   val sc    = getSparkContext(args, "PerKeyAvg")
   val input = sc.parallelize(List(("coffee", 1), ("coffee", 2), ("panda", 4)))
 

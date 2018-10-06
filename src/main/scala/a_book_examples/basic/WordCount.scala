@@ -1,12 +1,11 @@
-package a_book_examples
-
+package a_book_examples.basic
 import org.apache.hadoop.mapred.InvalidInputException
-import org.apache.spark._
+import org.apache.spark.SparkContext
 
 import scala.collection.immutable.ListMap
 
 //sbt "run local files\spam.txt spam_analize"
-object O1_WordCount extends App {
+object WordCount extends App {
   val master = args.length match {
     case x: Int if x > 0 => args(0)
     case _               => "local"
