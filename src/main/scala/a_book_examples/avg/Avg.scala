@@ -1,6 +1,6 @@
 package a_book_examples.avg
 import org.apache.spark.rdd.RDD
-import a_book_examples.StaticStorage._
+import a_book_examples.Helper._
 
 object Avg extends App {
   val sc     = getSparkContext(args, "BasicAvg")

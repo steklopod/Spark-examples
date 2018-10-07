@@ -1,5 +1,5 @@
 package a_book_examples.avg
-import a_book_examples.StaticStorage.getSparkContext
+import a_book_examples.Helper.getSparkContext
 
 //стр. 77
 object PerKeyAvg extends App {

@@ -1,6 +1,6 @@
 package a_book_examples.avg
 
-import a_book_examples.StaticStorage._
+import a_book_examples.Helper._
 
 object O3_3_BasicAvgMapPartitions extends App {
 

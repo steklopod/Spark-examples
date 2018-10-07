@@ -1,11 +1,15 @@
 package a_book_examples
+import java.io.File
+
+import a_book_examples.word_count.WordCount.counts
+import org.apache.commons.io.FileUtils
 import org.apache.hadoop.mapred.InvalidInputException
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
 import scala.collection.immutable.ListMap
 
-object StaticStorage {
+object Helper {
   var args: Array[String] = Array.empty[String]
   val defaultFile: String = "files\\input.txt"
   var output: String = "files\\output\\"
@@ -44,6 +48,14 @@ object StaticStorage {
       inputFile.flatMap(line => line.split(" "))
     }
 
+  def count(words: RDD[String]): RDD[(String, Long)] = {
+    words.map(word => (word, 1L)).reduceByKey(_ + _)
+  }
+
+  def countAsSeqOfTuples(words: RDD[String]) = {
+    words.countByValue()
+  }
+
   //печатаем ТОП-5 пар по убыванию {слово -> n}, где n - кол-во вхождений слова
   def printTo5WordsWithCounts(pairs: RDD[(String, Long)] ) = {
     //    val tuples = countAsSeqOfTuples(words).toArray.sortWith(_._2 > _._2)
@@ -52,4 +64,11 @@ object StaticStorage {
     val top5   = wc.take(5)
     println(top5.mkString(",\n"))
   }
+
+  //TODO - обобщить 2-й аргумент
+  def saveAsTxt(outputDir: String, counts: RDD[(String, Long)]): Unit = {
+    FileUtils.deleteQuietly(new File(outputDir))
+    counts.saveAsTextFile(outputDir)
+  }
+
 }

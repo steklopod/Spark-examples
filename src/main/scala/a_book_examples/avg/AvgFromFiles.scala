@@ -1,5 +1,5 @@
 package a_book_examples.avg
-import a_book_examples.StaticStorage._
+import a_book_examples.Helper._
 
 //сделать файл по умолчанию
 object AvgFromFiles extends App {

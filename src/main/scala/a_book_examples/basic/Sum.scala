@@ -1,5 +1,5 @@
 package a_book_examples.basic
-import a_book_examples.StaticStorage.getSparkContext
+import a_book_examples.Helper.getSparkContext
 
 object Sum extends App {
   val sc = getSparkContext(args, "BasicMap")
