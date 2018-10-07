@@ -11,11 +11,11 @@ import scala.collection.immutable.ListMap
 object Helper {
   var args: Array[String] = Array.empty[String]
   val defaultFile: String = "files\\input.txt"
-  var output: String = "files\\output\\"
+  var outputPath: String = "files\\output\\"
 
   def getSparkContext(args: Array[String], name: String): SparkContext = {
     this.args = args
-    if (args.length >2) output = args(2) //если передан 3-й аргумент - сохраняем вывод в файл по пути аргумента
+    if (args.length > 2) outputPath = args(2) //если передан 3-й аргумент - сохраняем вывод в файл по пути аргумента
     new SparkContext(getMaster(), name, System.getenv("SPARK_HOME"))
   }
 

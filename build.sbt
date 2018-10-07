@@ -23,6 +23,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka"      %% "akka-actor"               % akkaVersion,
   "com.typesafe.akka"      %% "akka-testkit"             % akkaVersion,
   "mysql"                  % "mysql-connector-java"      % "5.1.6",
+//  https://github.com/scopt/scopt
+  "com.github.scopt" % "scopt_2.11" % "3.7.0",
   "org.apache.spark"       %% "spark-core"               % sparkVersion,
   "org.apache.spark"       %% "spark-streaming"          % sparkVersion,
   "org.apache.spark"       %% "spark-sql"                % sparkVersion,
