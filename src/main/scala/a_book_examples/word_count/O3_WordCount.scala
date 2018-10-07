@@ -1,11 +1,11 @@
-package a_book_examples.basic
+package a_book_examples.word_count
 import org.apache.hadoop.mapred.InvalidInputException
 import org.apache.spark.SparkContext
 
 import scala.collection.immutable.ListMap
 
-//sbt "run local files\spam.txt spam_analize"
-object WordCount extends App {
+//sbt "run local files\input.txt spam_analize"
+object O3_WordCount extends App {
   val master = args.length match {
     case x: Int if x > 0 => args(0)
     case _               => "local"
@@ -15,7 +15,7 @@ object WordCount extends App {
 
   // файл, с которого считаются слова. Если не найден - то создадим новую коллекцию слов
   val defaultTextFile = try {
-    sc.textFile("files\\spam.txt")
+    sc.textFile("files\\input.txt")
   } catch {
     case _: InvalidInputException ⇒
       sc.parallelize(List("pandas", "i like pandas"))

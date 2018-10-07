@@ -4,7 +4,7 @@ import a_book_examples.StaticStorage._
 object AvgFromFile extends App {
   val sc = getSparkContext(args, "BasicAvg")
 
-  val input =  sc.parallelize(List(1, 2, 3, 4))
+  val input = sc.parallelize(List(1, 2, 3, 4))
 
   val result = input
     .map(_.toInt)

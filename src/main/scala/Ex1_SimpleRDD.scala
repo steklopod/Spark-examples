@@ -6,7 +6,7 @@ object Ex1_SimpleRDD {
     val sc   = new SparkContext(conf)
 
     // помещаем некоторые данные в RDD
-    val numbers = 1 to 10
+    val numbers    = 1 to 10
     val numbersRDD = sc.parallelize(numbers, 4)
     println("Распечатаем каждый элемент оригинального RDD")
     numbersRDD.foreach(println)
@@ -25,8 +25,9 @@ object Ex1_SimpleRDD {
     println("У нас должно быть 4 раздела (раздела)")
     println(partitions.count())
     partitions.foreach(a => {
-      println("Содержание раздела:" +
-        a.foldLeft("")((s, e) => s + " " + e))
+      println(
+        "Содержание раздела:" +
+          a.foldLeft("")((s, e) => s + " " + e))
     })
   }
 }

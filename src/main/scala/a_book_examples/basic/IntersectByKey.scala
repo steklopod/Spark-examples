@@ -5,7 +5,7 @@ import org.apache.spark.rdd.RDD
 import scala.reflect.ClassTag
 
 object IntersectByKey extends App {
-  val sc = getSparkContext(args,"BasicIntersectByKey")
+  val sc = getSparkContext(args, "BasicIntersectByKey")
 
   val rdd1                       = sc.parallelize(List((1, "panda"), (2, "happy")))
   val rdd2                       = sc.parallelize(List((2, "pandas")))
