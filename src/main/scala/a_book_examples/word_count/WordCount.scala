@@ -3,7 +3,8 @@ package a_book_examples.word_count
 import a_book_examples.Helper._
 import org.apache.spark.rdd.RDD
 
-//sbt "run local files\input.txt"
+// ~runMain a_book_examples.word_count.WordCount local files\input.txt output_2
+
 object WordCount extends App {
   private val sc                               = getSparkContext(args, "WordCount")
   private lazy val inputFile                   = getTextFile(sc)

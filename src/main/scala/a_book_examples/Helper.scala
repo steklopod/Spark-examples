@@ -1,7 +1,6 @@
 package a_book_examples
 import java.io.File
 
-import a_book_examples.word_count.WordCount.counts
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.mapred.InvalidInputException
 import org.apache.spark.SparkContext
