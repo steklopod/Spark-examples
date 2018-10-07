@@ -23,10 +23,10 @@ object WordCount extends App {
    saveAsTxt(output, counts)
 
    counts.repartition(5)
-   saveAsTxt(s"$output Out-2", counts)
+   saveAsTxt(s"${output}Out-2", counts)
 
    var repartitioned = counts.repartition(5)
-   saveAsTxt(s"$output Out-3", repartitioned)
+   saveAsTxt(s"${output}Out-3", repartitioned)
 
    counts.unpersist()
 }
